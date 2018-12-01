@@ -18,9 +18,16 @@ start:
 	jne .mmap_fail
 
 	; test a20 line; do some setting up.
+	mov si, a20set
+	call print
 	call set_a20
 	cmp ax, 0
 	je .a20_fail
+
+	; set protected mode
+	mov si, pmstart
+	call print
+	call set_pm
 
     ; hang system.
 	jmp hang
@@ -35,6 +42,8 @@ start:
 	jmp hang
 	
 .a20_fail:
+	mov si, a20fail
+	call print
 	jmp hang
 	
 
@@ -73,11 +82,11 @@ set_a20:
 	jmp .fail
 	
 .done:
-	mov ax, 0
+	mov ax, 1
 	ret
 	
 .fail:
-	mov ax, 1
+	mov ax, 0
 	ret
 	
 a20_bios_fail db "Failed to set A20 via BIOS, trying other method...",13,10,0
@@ -488,12 +497,103 @@ print_hex_digit:
 	mov al, bl
 	int 0x10
 	ret
+
+;------------------------------------------------------------------------------;
+; set_pm: sets up protected mode
+; takes:
+; changes:
+; returns:
+
+set_pm:
+	cli
 	
+	lgdt [gdt_pointer]
+	
+	mov eax, cr0
+	or eax, 0x1
+	mov cr0, eax
+	
+	jmp CODE_SEG:pm_boot
+	
+;------------------------------------------------------------------------------;
+; Some various GDT info.
+; Not a procedure. DO NOT JUMP HERE.
+
+
+gdt_start:
+
+; 1st entry is ignored but must be null
+gdt_null_entry:
+	dq 0x0
+	
+; entry: Limit=0xFFFFF [x4096 = 0xFFFFFFFF, end of memory]; Base=0x00000000
+; access: Present=1, RingLevel=00, Executable=1, Direction=0, ReadWrite=1, Accessed=0
+; flags: Granularity=1, Size=1, LimitHigh=1111 (0xF)
+gdt_code_entry:			
+	dw 0xFFFF			
+	dw 0x0				
+	db 0x0				
+	db 10011010b		
+	db 11001111b
+	db 0x0
+	
+; same as code entry, except not executable (1 bit difference in access)
+gdt_data_entry:
+	dw 0xFFFF			
+	dw 0x0				
+	db 0x0				
+	db 10010010b		
+	db 11001111b
+	db 0x0
+	
+; end of gdt
+gdt_end:
+
+; structure that points to GDT
+gdt_pointer:
+	dw gdt_end - gdt_start
+	dd gdt_start
+	
+CODE_SEG equ gdt_code_entry - gdt_start
+DATA_SEG equ gdt_data_entry - gdt_start
+
 ;------------------------------------------------------------------------------;
 
 ; strings
 welcome db "stage 2 started.",13,10,0
 mmap_fail_msg db "failed to get memory map: ",13,10,0
+a20set db "enabling A20 line..",13,10,0
+a20fail db "failed to enable A20 line via any method. your hardware may not be supported.",13,10,0.
+pmstart db "jumping to protected mode..",13,10,0
 			  
-; pad sector with 0s?
+;------------------------------------------------------------------------------;
+; PROTECTED MODE CODE
+
+bits 32
+
+pm_boot:
+	
+	; in protected mode, segment registers values hold "descriptors"
+	; load segment registers with new full-memory data segment descriptor.
+	mov ax, DATA_SEG
+	mov ds, ax
+	mov es, ax
+	mov fs, ax
+	mov gs, ax
+	mov ss, ax
+	
+	sti
+	
+	mov ebx, 0xB8000
+	mov ah, 0x70
+	mov al, 'A'
+	mov word [ebx], ax
+
+	cli
+	hlt
+	
+
+;------------------------------------------------------------------------------;
+
+; pad sector with 0s
 times 4096-($-$$) db 0
