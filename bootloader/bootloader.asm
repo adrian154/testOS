@@ -17,24 +17,176 @@ start:
 	cmp ax, 0
 	jne .mmap_fail
 
+	; test a20 line; do some setting up.
+	call set_a20
+
     ; hang system.
 	jmp hang
 	
 .mmap_fail:
+	push ax
+	mov si, mmap_fail_msg
+	pop ax
 	mov bx, ax
 	call print_hex_byte
-	mov si, mmap_fail_msg
 	call print
 	jmp hang
+
+;------------------------------------------------------------------------------;	
+; set_a20: sets a20 line with various methods.
+; inputs: 
+; changes:
+; returns: nothing
+
+set_a20:
+	
+	call test_a20
+	cmp ax, 0
+	je seta20_bios
+	jne .done
+	
+	call test_a20
+	cmp ax, 0
+	je seta20_kbcontroller              		; TODO
+	jne .done
+	
+	call test_a20
+	cmp ax, 0
+	je seta20_fast
+	jne .done
+	
+	
+.done:
+	ret
+	
+
+;------------------------------------------------------------------------------;
+; seta20_fast: sets A20 line with "fast" method
+; inputs: none
+; changes: none
+; returns: nothing
+
+seta20_fast:
+	push al
+	
+	in al, 0x92
+	test al, 2
+	jnz .done
+	
+	or al, 2    
+	and al, 0xFE
+	out 0x92, al
+
+.done:
+	pop al
+	ret	
 	
 ;------------------------------------------------------------------------------;
-; 
-;
-;
+; seta20_bios: sets A20 line with BIOS method
+; inputs: none
+; changes: AX
+; returns: 0=OK, 1=Not supported, 2=Failed otherwise
+
+seta20_bios:
+	mov ax, 0x2403
+	int 0x15	
+	jb .notsupported
+	cmp ah, 0
+	jnz .notsupported
+	
+	mov ax, 0x2402
+	int 0x15
+	jb .failed
+	cmp ah, 0
+	jnz .failed
+	
+	cmp al, 1
+	jz .activated
+	
+	mov ax, 0x2401
+	int 0x15
+	jb .failed
+	cmp ah, 0
+	jnz .failed
+	
+.notsupported:
+	mov ax, 1
+	ret
+	
+.failed:
+	mov ax, 2
+	ret
+	
+.activated:
+	mov ax, 0
+	ret
+	
+;------------------------------------------------------------------------------;
+; test_a20: test if A20 line is enabled. 
+; inputs:
+; changes:
+; returns: 0 if not set, 1 if set
+
+test_a20:
+	pushf
+	push ds
+	push es
+	push di
+	push si
+	
+	; test by 
+	
+	; set up segments
+	cli
+	xor ax, ax
+	mov es, ax
+	
+	not ax
+	mov ds, ax
+	sti
+	
+	; set up ds, si
+	mov di, 0x0500
+	mov si, 0x0510
+	
+	; push information at locations we'll be testing so it can be restored later
+	mov al, byte [es:di]
+	push ax
+	
+	mov al, byte [ds:si]
+	push ax
+	
+	; set 0000:0500 to 00, FFFF:0510 to FF 
+	mov byte [es:di], 0x00
+	mov byte [ds:si], 0xFF
+	
+	; check if they are identical
+	cmp byte [es:di], 0xFF
+	
+	; first, restore the locations
+	pop ax
+	mov byte [ds:si], al	
+	pop ax
+	mov byte [es:di], al	
+	
+	; now, compare.
+	mov ax, 0
+	je .done
+	
+	mov ax, 1	
+
+.done:
+	pop si
+	pop di
+	pop es
+	pop ds
+	popf
+	
+	ret
 	
 ;------------------------------------------------------------------------------;
 ; do_e820: use BIOS  interrupt 0x15 EAX=E820 to get a reliable memory map
-; takes: nothing 
+; inputs: nothing 
 ; changes: everything but ESI
 ; returns: BP=number of entries AL=success?
 ; 0=OK, 1=Carry was set, 2=Not supported, 3=Bad list
@@ -43,6 +195,7 @@ do_e820:
 	; set up for interrupt
 	mov eax, 0xE820
 	mov ebx, 0
+	
 	mov di, 0x8E00				; load map at 0x8E00, 1M above bootloader.
 	mov ecx, 24					; entries will not be >24bytes large
 	mov edx, 0x534D4150			; magic number.
@@ -247,7 +400,7 @@ print_hex_digit:
 
 ; strings
 welcome db "stage 2 started.",13,10,0
-mmap_fail_msg db "failed to get memory map.",13,10,0
+mmap_fail_msg db "failed to get memory map: ",13,10,0
 			  
 ; pad sector with 0s?
 times 4096-($-$$) db 0
