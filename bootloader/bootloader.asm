@@ -19,6 +19,8 @@ start:
 
 	; test a20 line; do some setting up.
 	call set_a20
+	cmp ax, 0
+	je .a20_fail
 
     ; hang system.
 	jmp hang
@@ -31,12 +33,16 @@ start:
 	call print_hex_byte
 	call print
 	jmp hang
+	
+.a20_fail:
+	jmp hang
+	
 
 ;------------------------------------------------------------------------------;	
 ; set_a20: sets a20 line with various methods.
-; inputs: 
-; changes:
-; returns: nothing
+; inputs: none 
+; changes: si, ax
+; returns: 0 for failure, 1 for success
 
 set_a20:
 	
@@ -45,21 +51,108 @@ set_a20:
 	je seta20_bios
 	jne .done
 	
+	mov si, a20_bios_fail
+	call print
+	
 	call test_a20
 	cmp ax, 0
-	je seta20_kbcontroller              		; TODO
+	je seta20_kbc              		
 	jne .done
+	
+	mov si, a20_kbc_fail
+	call print
 	
 	call test_a20
 	cmp ax, 0
 	je seta20_fast
 	jne .done
 	
+	mov si, a20_fast_fail
+	call print
+	
+	jmp .fail
 	
 .done:
+	mov ax, 0
 	ret
 	
+.fail:
+	mov ax, 1
+	ret
+	
+a20_bios_fail db "Failed to set A20 via BIOS, trying other method...",13,10,0
+a20_kbc_fail db "Failed to set A20 via keyboard controller, trying other method...",13,10,0
+a20_fast_fail db "Failed to set A20 via FAST A20. Aborting boot.",13,10,0
+	
+;------------------------------------------------------------------------------;
+; seta20_kbc: sets A20 line with keyboard controller.
+; inputs: none
+; changes: ax
+; returns: nothing
 
+seta20_kbc:
+	cli
+	
+	; send command 0xAD (disable keyboard)
+	call a20wait_send
+	mov al, 0xAD
+	out 0x64, al
+	
+	; send command 0xD0 (read output port and place into output buffer)
+	call a20wait_send
+	mov al, 0xD0
+	out 0x64, al
+	
+	; read byte and store on stack
+	call a20wait_read
+	in al, 0x60
+	push ax
+	
+	; send command 0xD1 (write to output port)
+	call a20wait_send
+	mov al, 0xD1
+	out 0x64, al
+	
+	; send the byte we read from output port earlier to the output port again.
+	call a20wait_send
+	pop ax
+	or al, 2
+	out 0x60, al
+	
+	; re-enable the keyboard
+	call a20wait_send
+	mov al, 0xAE
+	out 0x64, al
+	
+	; wait and return
+	call a20wait_send
+	sti
+	ret
+	
+;------------------------------------------------------------------------------;
+; a20wait_send: waits until keyboard controller sends an OK to send bytes.
+; inputs: none
+; changes: AX
+; returns: none
+
+a20wait_send:
+	in al, 0x64		; read keyboard controller status
+	test al, 2		; bit 2 in status byte = OK to write?
+	jnz a20wait_send
+	ret
+	
+;------------------------------------------------------------------------------;
+; a20wait_read: waits until keyboard controller sends an OK to read bytes.
+; inputs: none
+; changes: AX
+; returns: none
+
+a20wait_read:
+	in al, 0x64		; read status
+	test al, 1		; bit 1 = OK to read?
+	jnz a20wait_read
+	ret
+											
 ;------------------------------------------------------------------------------;
 ; seta20_fast: sets A20 line with "fast" method
 ; inputs: none
@@ -67,7 +160,7 @@ set_a20:
 ; returns: nothing
 
 seta20_fast:
-	push al
+	push ax
 	
 	in al, 0x92
 	test al, 2
@@ -78,7 +171,7 @@ seta20_fast:
 	out 0x92, al
 
 .done:
-	pop al
+	pop ax
 	ret	
 	
 ;------------------------------------------------------------------------------;
