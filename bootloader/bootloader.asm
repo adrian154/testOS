@@ -298,7 +298,7 @@ do_e820:
 	mov eax, 0xE820
 	mov ebx, 0
 	
-	mov di, 0x8E00				; load map at 0x8E00, 1M above bootloader.
+	mov di, 0x8200				; load map at 0x8E00, 1M above bootloader.
 	mov ecx, 24					; entries will not be >24bytes large
 	mov edx, 0x534D4150			; magic number.
 	
@@ -570,7 +570,6 @@ pmstart db "jumping to protected mode..",13,10,0
 ; PROTECTED MODE CODE
 
 bits 32
-
 pm_boot:
 	
 	; in protected mode, segment registers values hold "descriptors"
@@ -581,13 +580,10 @@ pm_boot:
 	mov fs, ax
 	mov gs, ax
 	mov ss, ax
-	
 	sti
 	
-	mov ebx, 0xB8000
-	mov ah, 0x70
-	mov al, 'A'
-	mov word [ebx], ax
+	; Jump to rest of PM bootloader.
+	jmp 0x8400
 
 	cli
 	hlt
@@ -596,4 +592,4 @@ pm_boot:
 ;------------------------------------------------------------------------------;
 
 ; pad sector with 0s
-times 4096-($-$$) db 0
+times 2048-($-$$) db 0

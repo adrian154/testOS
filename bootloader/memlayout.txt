@@ -1,0 +1,6 @@
+Locations of Things:
+
+0x7C00 to 0x7E00 bootsector
+0x7E00 to 0x8200 bootloader
+0x8200 to 0x8400 kernel info
+0x8400 to ???    kernel start

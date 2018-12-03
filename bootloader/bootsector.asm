@@ -7,7 +7,7 @@ BITS 16
 ORG 0x7C00
 
 ; constants
-SECTORS_TO_LOAD equ 8
+SECTORS_TO_LOAD equ 4
 
 ; set CS/IP by doing a far jump.
 jmp 0x0000:start
@@ -47,7 +47,6 @@ start:
     
 ; print message and errorcode, and hang.
 .errorloading:
-	
 	
 	push ax
 	
