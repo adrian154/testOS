@@ -587,7 +587,7 @@ pmstart db "jumping to protected mode..",13,10,0
 ;------------------------------------------------------------------------------;
 ; protected mode code
 
-bits 32
+BITS 32
 pm_boot:
 	
 	; in protected mode, segment registers values hold "descriptors"
@@ -601,7 +601,7 @@ pm_boot:
 	sti
 	
 	; Jump to rest of PM bootloader.
-	jmp 0x8200
+	jmp 0x8400
 
 	cli
 	hlt
@@ -609,4 +609,4 @@ pm_boot:
 ;------------------------------------------------------------------------------;
 ; pad sector with 0s
 times 1022-($-$$) db 0
-dw 0xFEEF 					; debug
+debug dw 0xFEEF

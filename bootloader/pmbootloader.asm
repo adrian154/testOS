@@ -4,19 +4,19 @@
 ; start environment: ??? 
 ; loaded in protected mode at 0x8400
 BITS 32
-ORG 0x8200
+ORG 0x8400
 
 ; entry point
 start:           
 	
 	; clear screen
-	;call clearscreen
+	call clearscreen
 
 	; set up stack
-	;mov esp, stack
+	mov esp, stack
 	
 	; test: print "T" to make sure PM is working
-	;mov word [0xB8000], 0x0754
+	mov word [0xB8000], 0x0754
 	
 	; halt
 	jmp hang
