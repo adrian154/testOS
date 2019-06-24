@@ -5,10 +5,12 @@
 BITS 16
 ORG 0x7E00
 
-; entry point
+;------------------------------------------------------------------------------;
+; start: entry point
+
 start:
 
-	; print message
+	; print welcome message
 	mov si, welcome
 	call print
 
@@ -17,21 +19,23 @@ start:
 	cmp ax, 0
 	jne .mmap_fail
 
-	; test a20 line; do some setting up.
+	; test a20 line, do some setting up
 	mov si, a20set
 	call print
 	call set_a20
 	cmp ax, 0
 	je .a20_fail
 
-	; set protected mode
+	; print message and set protected mode
 	mov si, pmstart
 	call print
 	call set_pm
 
-    ; hang system.
+    	; hang system.
 	jmp hang
 	
+; jump point if loader cannot get memory map
+; prints message and hangs
 .mmap_fail:
 	push ax
 	mov si, mmap_fail_msg
@@ -41,6 +45,8 @@ start:
 	call print
 	jmp hang
 	
+; jump point of loader cannot set a20 line
+; prints message and hangs
 .a20_fail:
 	mov si, a20fail
 	call print
@@ -55,14 +61,16 @@ start:
 
 set_a20:
 	
+	; try using the BIOS
 	call test_a20
 	cmp ax, 0
 	je seta20_bios
 	jne .done
-	
+
 	mov si, a20_bios_fail
 	call print
 	
+	; try using the keyboard controller
 	call test_a20
 	cmp ax, 0
 	je seta20_kbc              		
@@ -71,6 +79,7 @@ set_a20:
 	mov si, a20_kbc_fail
 	call print
 	
+	; try using the "fast" route
 	call test_a20
 	cmp ax, 0
 	je seta20_fast
@@ -79,16 +88,19 @@ set_a20:
 	mov si, a20_fast_fail
 	call print
 	
+	; if none worked, jump to failure handler
 	jmp .fail
 	
+; return success
 .done:
 	mov ax, 1
 	ret
 	
+; return failure
 .fail:
 	mov ax, 0
 	ret
-	
+
 a20_bios_fail db "Failed to set A20 via BIOS, trying other method...",13,10,0
 a20_kbc_fail db "Failed to set A20 via keyboard controller, trying other method...",13,10,0
 a20_fast_fail db "Failed to set A20 via FAST A20. Aborting boot.",13,10,0
@@ -135,6 +147,7 @@ seta20_kbc:
 	
 	; wait and return
 	call a20wait_send
+	
 	sti
 	ret
 	
@@ -230,13 +243,15 @@ seta20_bios:
 ; returns: 0 if not set, 1 if set
 
 test_a20:
+
+	; test if the a20 line is set: if it is not enabled, memory addresses are truncated at 21 bits so only 1M of memory is accessible
+	; (8086 could only access 20 bits of memory; to maintain compatibility the a20 line was added)
+
 	pushf
 	push ds
 	push es
 	push di
 	push si
-	
-	; test by 
 	
 	; set up segments
 	cli
@@ -299,7 +314,7 @@ do_e820:
 	mov ebx, 0
 	
 	mov di, 0x8200				; load map at 0x8E00, 1M above bootloader.
-	mov ecx, 24					; entries will not be >24bytes large
+	mov ecx, 24				; entries will not be >24bytes large
 	mov edx, 0x534D4150			; magic number.
 	
 	; force to be valid ACPI entry
@@ -377,23 +392,23 @@ do_e820:
 	mov ax, 3
 	ret
 
-;------------------------------------------------------------------------------;
-	  
+;------------------------------------------------------------------------------;  
 ; hang: infinitely stop the system.
 ; inputs: none
 ; changes: Interrupt flag
 ; returns: doesn't
+
 hang:
 	cli
 	hlt
 	jmp hang
 	
 ;------------------------------------------------------------------------------;
-
 ; print: prints a string
 ; inputs: SI=Pointer to string
 ; changes: Direction flag, AX 
 ; returns: none
+
 print:
 	; set up AH for interrupt, direction flag so the string is read correctly
 	mov ah, 0x0E
@@ -413,6 +428,7 @@ print:
 ; inputs: byte to print in EBX
 ; changes: AX, EBX
 ; returns: none
+
 print_hex_dword:
 	push ebx
 	mov ah, 0x0E
@@ -431,6 +447,7 @@ print_hex_dword:
 ; inputs: byte to print in BX
 ; changes: AX, BX
 ; returns: none
+
 print_hex_word:
 	push bx
 	mov ah, 0x0E
@@ -450,6 +467,7 @@ print_hex_word:
 ; inputs:  byte to print in BL
 ; changes: AX, BX
 ; returns: none
+
 print_hex_byte:
 	; save bx; put 1st hex digit into BL. also prepare for printing via int 0x10
 	push bx
@@ -472,6 +490,7 @@ print_hex_byte:
 ; inputs: digit in BL
 ; changes: AX
 ; returns: none
+
 print_hex_digit:
 	; prepare for int 0x10
 	mov ah, 0x0E
@@ -519,7 +538,6 @@ set_pm:
 ; Some various GDT info.
 ; Not a procedure. DO NOT JUMP HERE.
 
-
 gdt_start:
 
 ; 1st entry is ignored but must be null
@@ -558,8 +576,8 @@ CODE_SEG equ gdt_code_entry - gdt_start
 DATA_SEG equ gdt_data_entry - gdt_start
 
 ;------------------------------------------------------------------------------;
-
 ; strings
+
 welcome db "stage 2 started.",13,10,0
 mmap_fail_msg db "failed to get memory map: ",13,10,0
 a20set db "enabling A20 line..",13,10,0
@@ -567,7 +585,7 @@ a20fail db "failed to enable A20 line via any method. your hardware may not be s
 pmstart db "jumping to protected mode..",13,10,0
 			  
 ;------------------------------------------------------------------------------;
-; PROTECTED MODE CODE
+; protected mode code
 
 bits 32
 pm_boot:
@@ -588,8 +606,6 @@ pm_boot:
 	cli
 	hlt
 	
-
 ;------------------------------------------------------------------------------;
-
 ; pad sector with 0s
 times 2048-($-$$) db 0
