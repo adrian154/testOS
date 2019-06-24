@@ -13,8 +13,8 @@ SECTORS_TO_LOAD equ 4
 jmp 0x0000:start
 
 ;------------------------------------------------------------------------------;
-
 ; entry point.
+
 start:
 
 	; set up segments & stack.
@@ -59,12 +59,12 @@ start:
 	
 	jmp hang
 	
-;------------------------------------------------------------------------------;
-    
+;------------------------------------------------------------------------------; 
 ; print: prints a string
 ; inputs: SI=Pointer to string
 ; changes: Direction flag, AX 
 ; returns: none
+
 print:
 	; set up AH for interrupt, direction flag so the string is read correctly
 	mov ah, 0x0E
@@ -79,12 +79,12 @@ print:
 .done:
 	ret 
 	
-;------------------------------------------------------------------------------;
-	
+;------------------------------------------------------------------------------;	
 ; print_hex_byte: print 1 hex byte in BL.
 ; inputs:  byte to print in BL
 ; changes: AX, BX
 ; returns: none
+
 print_hex_byte:
 	; save bx; put 1st hex digit into BL. also prepare for printing via int 0x10
 	push bx
@@ -102,11 +102,11 @@ print_hex_byte:
 	ret
 
 ;------------------------------------------------------------------------------;
-
 ; print_hex_digit: print 1 digit of hex in BL
 ; inputs: digit in BL
 ; changes: AX
 ; returns: none
+
 print_hex_digit:
 	; prepare for int 0x10
 	mov ah, 0x0E
@@ -133,12 +133,12 @@ print_hex_digit:
 	int 0x10
 	ret
 	
-;------------------------------------------------------------------------------;	
-		
+;------------------------------------------------------------------------------;		
 ; load_stage2: loads stage 2 into memory
 ; inputs: none
 ; changes: AX, CX, DX 
 ; returns: status code (0 = success)
+
 load_stage2:
 	; use bios INT 0x13 AH=0x02 to load sectors.
 	mov ah, 0x02		; function number
@@ -150,6 +150,7 @@ load_stage2:
 	int 0x13
 	ret
     
+;------------------------------------------------------------------------------;
 ; hang: infinitely stop the system.
 ; inputs: none
 ; changes: Interrupt flag
@@ -159,12 +160,13 @@ hang:
 	hlt
 	jmp hang
 	
-;------------------------------------------------------------------------------;
-	
+;------------------------------------------------------------------------------;	
 ; messages displayed to the user.
+
 welcome db "testOS bootsector started.",13,10,0
 loaderror db "error loading stage 2.",13,10,0
 	
+;------------------------------------------------------------------------------;
 ; pad with zeroes. leave space for magic number.
 times 510-($-$$) db 0
 dw 0xAA55	
