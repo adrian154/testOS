@@ -31,7 +31,7 @@ start:
 	call print
 	call set_pm
 
-    	; hang system.
+    ; hang system.
 	jmp hang
 	
 ; jump point if loader cannot get memory map
@@ -601,11 +601,12 @@ pm_boot:
 	sti
 	
 	; Jump to rest of PM bootloader.
-	jmp 0x8400
+	jmp 0x8200
 
 	cli
 	hlt
 	
 ;------------------------------------------------------------------------------;
 ; pad sector with 0s
-times 2048-($-$$) db 0
+times 1022-($-$$) db 0
+dw 0xFEEF 					; debug

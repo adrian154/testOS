@@ -1,6 +1,6 @@
 Locations of Things:
 
-0x7C00 to 0x7E00 bootsector
-0x7E00 to 0x8200 bootloader
-0x8200 to 0x8400 kernel info
-0x8400 to ???    kernel start
+0 bootsector
+1 2 bootloader
+3 4 5 6 7 8 9 10 11 protected mode bootloader
+
