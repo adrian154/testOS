@@ -7,6 +7,7 @@ BITS 32
 ORG 0x8400
 
 ; entry point
+GLOBAL start
 start:           
 	
 	; clear screen
