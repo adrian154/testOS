@@ -4,10 +4,11 @@
 ; start environment: ??? 
 ; loaded in protected mode at 0x8400
 BITS 32
-ORG 0x8400
+;ORG 0x8400
 
-; entry point
+; entry point, also declare extern that is the C part of our kernel
 GLOBAL start
+EXTERN cmain
 start:           
 	
 	; clear screen
@@ -18,6 +19,9 @@ start:
 	
 	; test: print "T" to make sure PM is working
 	mov word [0xB8000], 0x0754
+	
+	; call kernel
+	call 0x00009600
 	
 	; halt
 	jmp hang

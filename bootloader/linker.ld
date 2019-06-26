@@ -1,7 +1,7 @@
 OUTPUT_FORMAT("binary")
-ENTRY(cmain)
+ENTRY(start)
 
-phys = 0x000010000;
+phys = 0x00008400;
 
 SECTIONS
 {
