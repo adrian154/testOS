@@ -8,8 +8,10 @@ void cmain() {
 	resetTerminal();
 	
 	/* Finally! */
-	printString("Hello, world! For good!\n");
-		
+	terminalForeground = 0xC;
+	printString("testOS kernel started.\n");
+	terminalForeground = 0xF;
+	
     /* Hang so CPU doesn't start executing random instructions. */
 	hang();
 

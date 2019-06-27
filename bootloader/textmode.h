@@ -1,5 +1,5 @@
 extern unsigned short terminalX, terminalY;
-extern short terminalColor;
+extern unsigned char terminalForeground, terminalBackground;
 extern void resetTerminal();
 extern void clearScreen();
 extern void putChar(char character);

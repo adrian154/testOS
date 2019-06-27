@@ -5,7 +5,7 @@
 
 unsigned short *buffer;
 unsigned short terminalX, terminalY;
-unsigned short terminalForeground, terminalBackground;
+unsigned char terminalForeground, terminalBackground;
 
 /* Given foreground and background, encode a color. */
 unsigned char encodeColor(unsigned char foreground, char background) {
