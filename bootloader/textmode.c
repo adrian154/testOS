@@ -1,20 +1,5 @@
 /* textmode.c: interface with VGA text mode. */
 
-/*
-* VGA text mode is the default graphics mode that x86 CPUs launch into.
-* Writing characters to the screen in VGA text mode is very easy. 
-* VGA text mode will always have a "resolution" of 80x25 characters.
-*
-* The screen is stored as a buffer of two byte characters with the following encoding:
-* 	byte 0: color byte
-*		bit 7: depends (on some CPUs, a blink bit; on others, 4th bit of background color
-*		bit 6,5,4: background color
-*		bit 3,2,1,0: foreground color
-*	byte 1: codepoint (actual character)
-*		nb: generally ASCII but may vary
-*
-* The buffer is always located at 0xB8000.
-*/
 
 #include "textmode.h"
 
