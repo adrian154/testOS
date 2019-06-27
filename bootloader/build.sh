@@ -8,12 +8,14 @@ dd if=bootloader.bin of=disk.img seek=1 bs=512
 
 # Assemble procted mode stuff.
 nasm -f elf pmbootloader.asm -o pmbootloader.o
+nasm -f elf etc.asm -o etc_asm.o
 
 # Compile kernel (C).
 i686-elf-gcc -c kernel.c -o kernel.o -std=gnu99 -ffreestanding -Wall -Wextra -g
+i686-elf-gcc -c textmode.c -o textmode.o -std=gnu99 -ffreestanding -Wall -Wextra -g
 
 # Link kernel binary.
-i686-elf-gcc -T linker.ld -o kernel.bin -ffreestanding -O0 -nostdlib pmbootloader.o kernel.o
+i686-elf-gcc -T linktest.ld -o kernel.bin -ffreestanding -O0 -nostdlib pmbootloader.o kernel.o etc_asm.o textmode.o
 
 # Write kernel binary.
 dd if=kernel.bin of=disk.img seek=4 bs=512

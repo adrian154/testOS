@@ -9,19 +9,18 @@ BITS 32
 ; entry point, also declare extern that is the C part of our kernel
 GLOBAL start
 EXTERN cmain
+
 start:           
 	
 	; clear screen
-	call clearscreen
+	;call clearscreen
 
 	; set up stack
-	mov esp, stack
-	
-	; test: print "T" to make sure PM is working
-	mov word [0xB8000], 0x0754
-	
+	mov ebp, stack_bottom + 0x8400
+	mov esp, stack_top + 0x8400
+
 	; call kernel
-	call 0x00009600
+	call cmain
 	
 	; halt
 	jmp hang
@@ -65,7 +64,9 @@ clearscreen:
 ;------------------------------------------------------------------------------;
 ; stack: reserve 4K for system stack
 
-stack:
+ALIGN 16
+stack_bottom:
 	resb 4096
+stack_top:
 	    
 times 4608-($-$$) db 0

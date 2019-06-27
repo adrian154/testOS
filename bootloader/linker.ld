@@ -9,8 +9,14 @@ SECTIONS
 	{
 		code = .;
 		*(.text)
-		*(.rodata)
 		. = ALIGN(4K);		
+	}
+	
+	.rodata : AT(phys + (rodata - code))
+	{
+		rodata = .;
+		*(.rodata*)
+		. = ALIGN(4K);
 	}
 	
 	.data : AT(phys + (data - code))
