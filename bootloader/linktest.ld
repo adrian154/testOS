@@ -5,19 +5,22 @@ phys = 0x00008400;
 
 SECTIONS
 {
-	.text BLOCK(4K) : ALIGN(4K) {
+
+	. = phys;
+
+	.text : {
 		*(.text)
 	}
 	
-	.rodata BLOCK(4K) : ALIGN(4K) {
+	.rodata : {
 		*(.rodata)
 	}
 	
-	.data BLOCK(4K) : ALIGN(4K) {
+	.data : {
 		*(.data)
 	}
 	
-	.bss BLOCK(4K) : ALIGN(4K) {
+	.bss : {
 		*(.bss)
 	}
 	

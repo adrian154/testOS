@@ -6,12 +6,11 @@ void cmain() {
 
 	/* Reset terminal so messages can be printed to screen. */           
 	resetTerminal();
-
-	//char text[8] = {'H', 'e', 'l', 'l', 'o', '.', '\n', '\0'};
-	const char *text = "Hello.\n";
-	putChar(text[0]);
 	
-    /* hang so CPU doesn't start executing random instructions */
+	/* Finally! */
+	printString("Hello, world! For good!\n");
+		
+    /* Hang so CPU doesn't start executing random instructions. */
 	hang();
 
 } 

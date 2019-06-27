@@ -88,3 +88,20 @@ void printString(const char *string) {
 	
 }
 
+void printByte(unsigned char byte) {
+	unsigned char high = byte >> 4;
+	unsigned char low = byte & 0x0F;
+	putChar(high > 9 ? high - 0xA + 'A' : high + '0');
+	putChar(low > 9 ? low - 0xA + 'A' : low + '0');
+}
+
+void printWord(unsigned short word) {
+	printByte(word >> 8);
+	printByte(word & 0xFF);
+}
+
+void printDword(unsigned int dword) {
+	printWord(dword >> 16);
+	printWord(dword & 0xFFFF);
+}
+

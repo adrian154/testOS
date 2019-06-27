@@ -5,3 +5,6 @@ extern void clearScreen();
 extern void putChar(char character);
 extern void printString(const char *string);
 extern unsigned int strlen(const char *string);
+extern void printByte(unsigned char byte);
+extern void printWord(unsigned short word);
+extern void printDword(unsigned int dword);
