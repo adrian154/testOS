@@ -1,7 +1,7 @@
 /* textmode.c: interface with VGA text mode. */
 
-
 #include "textmode.h"
+#include "misc.h"
 
 unsigned short *buffer;
 unsigned short terminalX, terminalY;
@@ -47,9 +47,21 @@ void resetTerminal() {
 void putChar(char character) {
 	
 	/* If the cursor is offscreen , simulate a newline. */
-	if(terminalX > 80) {
+	if(terminalX == 80) {
 		terminalX = 0;
 		terminalY++;
+	}
+	
+	if(terminalY == 25) {
+		for(unsigned short y = 1; y < 25; y++) {
+			for(unsigned short x = 0; x < 80; x++) {
+				buffer[(y - 1) * 80 + x] = buffer[y * 80 + x];
+			}
+		}
+		
+		//for(unsigned short x = 0; x < 80; x++) {
+		//	buffer[24 * 80 + x] = encodeCharacter(terminalForeground, terminalBackground, ' ');	
+		//}	
 	}
 	
 	/* Simulate carriage return and newline. */
@@ -70,14 +82,6 @@ void putChar(char character) {
 	}
 	
 	
-}
-
-unsigned int strlen(const char *string) {
-	unsigned int length = 0;
-	
-	for(length = 0; string[length] != 0; length++);
-	
-	return length;
 }
 
 void printString(const char *string) {
