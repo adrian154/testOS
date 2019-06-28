@@ -1,6 +1,6 @@
-GLOBAL loadIdt
-EXTERN idtPointer
+GLOBAL loadIDT
+EXTERN IDTPointer
 
-loadIdt:
-	lidt [idtPointer]
+loadIDT:
+	lidt [IDTPointer]
 	ret

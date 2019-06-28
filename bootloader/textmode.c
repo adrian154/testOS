@@ -39,8 +39,8 @@ void resetTerminal() {
 	clearScreen();
 	
 	/* Reset black and white color scheme. */
-	terminalForeground = 15;
-	terminalBackground = 0x0;
+	terminalForeground = WHITE;
+	terminalBackground = BLACK;
 
 }
 
