@@ -124,7 +124,7 @@ irqHandler:
 	pop ds
 	
 	popa
-	add esp, 8
+	add esp, 4
 	
 	sti
 	iret

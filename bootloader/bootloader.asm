@@ -314,7 +314,7 @@ do_e820:
 	mov ebx, 0
 	
 	mov di, 0x8200				; load map at 0x8E00, 1M above bootloader.
-	mov ecx, 24				; entries will not be >24bytes large
+	mov ecx, 24					; entries will not be >24bytes large
 	mov edx, 0x534D4150			; magic number.
 	
 	; force to be valid ACPI entry
@@ -376,7 +376,9 @@ do_e820:
 	jne .loop
 	
 .done:
+	; return 0 for success; also save BP (number of entries written)
 	mov ax, 0
+	mov [0x83FE], bp
 	clc
 	ret
 	
@@ -583,7 +585,7 @@ mmap_fail_msg db "failed to get memory map: ",13,10,0
 a20set db "enabling A20 line..",13,10,0
 a20fail db "failed to enable A20 line via any method. your hardware may not be supported.",13,10,0.
 pmstart db "jumping to protected mode..",13,10,0
-			  
+
 ;------------------------------------------------------------------------------;
 ; protected mode code
 
@@ -602,7 +604,7 @@ pm_boot:
 	
 	; Jump to rest of PM bootloader.
 	jmp 0x8400
-
+	
 	cli
 	hlt
 	

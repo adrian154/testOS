@@ -52,18 +52,6 @@ void putChar(char character) {
 		terminalY++;
 	}
 	
-	if(terminalY == 25) {
-		for(unsigned short y = 1; y < 25; y++) {
-			for(unsigned short x = 0; x < 80; x++) {
-				buffer[(y - 1) * 80 + x] = buffer[y * 80 + x];
-			}
-		}
-		
-		//for(unsigned short x = 0; x < 80; x++) {
-		//	buffer[24 * 80 + x] = encodeCharacter(terminalForeground, terminalBackground, ' ');	
-		//}	
-	}
-	
 	/* Simulate carriage return and newline. */
 	else if(character == '\r') {
 		terminalX = 0;
@@ -79,6 +67,19 @@ void putChar(char character) {
 	else {
 		buffer[terminalY * 80 + terminalX] = encodeCharacter(terminalForeground, terminalBackground, character);
 		terminalX++;
+	}
+	
+	/* Simulate scroll. */	
+	if(terminalY == 25) {
+		//for(unsigned short y = 1; y < 25; y++) {
+		//	for(unsigned short x = 0; x < 80; x++) {
+		//		buffer[(y - 1) * 80 + x] = buffer[y * 80 + x];
+		//	}
+		//}
+		//for(unsigned short x = 0; x < 80; x++) {
+		//	buffer[24 * 80 + x] = encodeCharacter(terminalForeground, terminalBackground, ' ');	
+		//}
+		terminalY = 0;
 	}
 	
 	
