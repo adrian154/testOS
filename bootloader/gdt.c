@@ -1,5 +1,6 @@
 #include "gdt.h"
 #include "misc.h"
+#include "textmode.h"
 
 /* Define three entries. */
 struct GDTEntry gdt[3];
@@ -20,6 +21,9 @@ void installGDTGate(unsigned char index, unsigned long base, unsigned int limit,
 
 	/* Finally, also add the access byte. */
 	gdt[index].access = access;
+	
+	printByte(flags); putChar(':');
+	printByte(gdt[index].limitAndFlags); putChar('\n');
 }
 
 /* Install a code and data descriptor. */
@@ -40,3 +44,5 @@ void installGDT() {
 	loadGDT();
 	
 }
+
+

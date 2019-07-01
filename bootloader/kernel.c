@@ -5,6 +5,7 @@
 #include "idt.h"
 #include "exception.h"
 #include "memorymap.h"
+#include "irq.h"
 
 void cmain() {     
 
@@ -26,13 +27,18 @@ void cmain() {
 	
 	/* Install handlers for interrupst 0-31 (CPU-generated exceptions. */
 	installISRs();
-	printString("installed exception handlers.\n");
+	printString("installed exception handler.\n");
 	
-	printString("parsing memory map...\n");
+	/* Set up IRQs. */
+	installIRQs();
+	printString("installed IRQ handler.\n");
 	
 	/* Dump memory map. */
+	printString("parsing memory map...\n");
 	unsigned short numMapEntries = *(unsigned short *)0x83FE;
 	printMemoryMap(numMapEntries, (struct MemoryMapEntry *)0x8200);
+	
+	//volatile int test = 5 / 0;
 	
     /* Hang so CPU doesn't start executing random instructions. */
 	hang();

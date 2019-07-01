@@ -97,7 +97,7 @@ irq15:
 	
 extern irqHandler
 
-irqHandler:
+irqWrapper:
 	pusha
 	
 	push ds

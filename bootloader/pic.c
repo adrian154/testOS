@@ -4,7 +4,8 @@
 
 void remapPIC(unsigned char offset1, unsigned char offset2) {
 	
-	print("remapping pics to offsets 0x"); printByte(offset1); print(" and 0x"); printByte(offset2);
+	printString("remapping pics to offsets 0x"); printByte(offset1); printString(" and 0x"); printByte(offset2);
+	printString(".\n");
 	
 	/* Send 1st initialization word. 0x11 specifies that a 4th ICW will also be sent. */
 	outb(PIC1_COMMAND, 0x11);

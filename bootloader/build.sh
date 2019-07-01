@@ -12,7 +12,7 @@ nasm -f elf misc.asm -o ./build/misc_asm.o
 nasm -f elf idt.asm -o ./build/idt_asm.o
 nasm -f elf exception.asm -o ./build/exception_asm.o
 nasm -f elf gdt.asm -o ./build/gdt_asm.o
-#nasm -f elf irq.asm -o ./build/irq_asm.o
+nasm -f elf irq.asm -o ./build/irq_asm.o
 
 # Compile kernel (C).
 i686-elf-gcc -c kernel.c -o ./build/kernel.o -std=gnu99 -ffreestanding -Wall -Wextra -g
@@ -22,10 +22,11 @@ i686-elf-gcc -c idt.c -o ./build/idt.o -std=gnu99 -ffreestanding -Wall -Wextra -
 i686-elf-gcc -c misc.c -o ./build/misc.o -std=gnu99 -ffreestanding -Wall -Wextra -g
 i686-elf-gcc -c exception.c -o ./build/exception.o -std=gnu99 -ffreestanding -Wall -Wextra -g
 i686-elf-gcc -c memorymap.c -o ./build/memorymap.o -std=gnu99 -ffreestanding -Wall -Wextra -g
-i686-elf-gcc -c pic.c -o -./build/pic.o -std=gnu99 -ffreestanding -Wall -Wextra -g
+i686-elf-gcc -c pic.c -o ./build/pic.o -std=gnu99 -ffreestanding -Wall -Wextra -g
+i686-elf-gcc -c irq.c -o ./build/irq.o -std=gnu99 -ffreestanding -Wall -Wextra -g
 
 # Link kernel binary.
-i686-elf-gcc -T linktest.ld -o ./build/kernel.bin -ffreestanding -O0 -nostdlib ./build/pmbootloader.o ./build/kernel.o ./build/misc.o ./build/misc_asm.o ./build/textmode.o ./build/idt.o ./build/idt_asm.o ./build/exception.o ./build/exception_asm.o ./build/gdt_asm.o ./build/gdt.o ./build/memorymap.o #irq_asm.o irq.o
+i686-elf-gcc -T linktest.ld -o ./build/kernel.bin -ffreestanding -O0 -nostdlib ./build/pmbootloader.o ./build/kernel.o ./build/misc.o ./build/misc_asm.o ./build/textmode.o ./build/idt.o ./build/idt_asm.o ./build/exception.o ./build/exception_asm.o ./build/gdt_asm.o ./build/gdt.o ./build/memorymap.o ./build/irq_asm.o ./build/irq.o ./build/pic.o
 
 # Write kernel binary.
 dd if=./build/kernel.bin of=disk.img seek=4 bs=512
