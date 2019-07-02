@@ -125,8 +125,7 @@ irqWrapper:
 	
 	popa
 	add esp, 4
-	
-	sti
+
 	iret
 	
 	

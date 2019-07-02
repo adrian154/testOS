@@ -27,6 +27,19 @@ void remapPIC(unsigned char offset1, unsigned char offset2) {
 	outb(PIC2_DATA, 0x00);
 }
 
+void testRemap() {
+	outb(0x20, 0x11);
+    outb(0xA0, 0x11);
+    outb(0x21, 0x20);
+    outb(0xA1, 0x28);
+    outb(0x21, 0x04);
+    outb(0xA1, 0x02);
+    outb(0x21, 0x01);
+    outb(0xA1, 0x01);
+    outb(0x21, 0x0);
+    outb(0xA1, 0x0);
+}
+
 void sendEOI(unsigned char irq) {
 	
 	/* If IRQ 8-15, PIC #2 also needs to receive an EOI. */

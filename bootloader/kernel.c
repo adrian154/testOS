@@ -8,7 +8,8 @@
 #include "irq.h"
 
 void testHandler(struct InterruptFrame *frame) {
-	putChar('a');
+	printString("keypress ");
+	inb(0x60);
 }
 
 void cmain() {     
@@ -41,12 +42,15 @@ void cmain() {
 	printString("parsing memory map...\n");
 	unsigned short numMapEntries = *(unsigned short *)0x83FE;
 	printMemoryMap(numMapEntries, (struct MemoryMapEntry *)0x8200);
-	
-	installIRQHandler(1, testHandler);
+
 	asm("sti");
-	asm("int $0x20");
-
+	installIRQHandler(1, testHandler);
+	
+	//asm("mov $0x0, %eax");
+	//asm("div %eax");
+	
     /* Hang so CPU doesn't start executing random instructions. */
-	hang();
-
+	//hang();
+	
+	for(;;);
 } 

@@ -36,8 +36,9 @@ void clearIRQHandler(unsigned char irq) {
 
 /* Remap IRQs; by default IRQ0-7 are mapped to interrupts 8-15 which won't work for us because this coincides with the CPU's built in exceptions. */
 void installIRQs() {
-	remapPIC(0x20, 0x28);
-
+	//remapPIC(0x20, 0x28);
+	testRemap();
+	
 	installIDTGate(32, (unsigned int)irq0, GDT_CODE_DESCRIPTOR, IDT_PRESENT | IDT_INTERRUPTGATE);
 	installIDTGate(33, (unsigned int)irq1, GDT_CODE_DESCRIPTOR, IDT_PRESENT | IDT_INTERRUPTGATE);
 	installIDTGate(34, (unsigned int)irq2, GDT_CODE_DESCRIPTOR, IDT_PRESENT | IDT_INTERRUPTGATE);
@@ -62,14 +63,15 @@ void installIRQs() {
 }
 
 void irqHandler(struct InterruptFrame *frame) {
+	unsigned char irq = frame->interruptNumber - 0x20;
 	
 	/* If a handler is defined for that IRQ, run it. */
-	IRQHandler handler = IRQHandlers[frame->interruptNumber];
+	IRQHandler handler = IRQHandlers[irq];
 	if(handler) {
 		handler(frame);
 	}
 	
 	/* Send EOI to end interrupt. */
-	sendEOI(frame->interruptNumber);
+	sendEOI(irq);
 	
 }

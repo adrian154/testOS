@@ -256,8 +256,5 @@ isrWrapper:
 		; Clean up pushed error code and ISR numbers
 		add esp, 8
 		
-		; Reenable interrupts 
-		sti
-		
 		iret
 		

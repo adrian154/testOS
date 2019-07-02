@@ -7,5 +7,6 @@
 /* PIC command: EOI */
 #define PIC_EOI			0x20
 
+extern void testRemap();
 extern void remapPIC(unsigned char offset1, unsigned char offset2);
 extern void sendEOI(unsigned char irq);
