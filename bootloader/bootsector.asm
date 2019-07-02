@@ -1,51 +1,49 @@
 ; bootsector.asm: bootsector for testOS.
 
-; start environment - Real mode, physical 0x7C00 (no guarentees about CS/IP)
-; DL contains disk number; nothing else!
+; Start environment: Real mode, physical 0x7C00 (no guarantees about CS/IP)
+; DL contains disk number
 
 BITS 16
 ORG 0x7C00
 
-; constants
+; Constants.
 SECTORS_TO_LOAD equ 26
 
-; set CS/IP by doing a far jump.
+; Set CS/IP by doing a far jump.
 jmp 0x0000:start
 
 ;------------------------------------------------------------------------------;
-; entry point.
+; Entry point.
 
 start:
 
-	; set up segments & stack.
+	; Set up segments & stack.
 	cli
 	
 	xor ax, ax
 	mov ds, ax
 	mov es, ax
 	
-	; stack will be at 0x0000:0x7BFF, right below our bootsector
+	; Stack will be at 0x0000:0x7BFF, right below our bootsector.
 	mov ss, ax
 	mov sp, 0x7BFF
 	
 	sti
 
-   	; show a success message.
+   	; Show a success message.
    	mov si, welcome
    	call print
    	
-   	; load stage 2. if there is an error, print a message.
+   	; Load stage 2 and far jump to it.
    	call load_stage2
    	cmp ah, 0
    	jne .errorloading
-   
-   	; far jump to stage 2.
    	jmp 0x0000:0x7E00
    
-	; hang.
+	; Hang, just in case.
     jmp hang  
     
-; print message and errorcode, and hang.
+; Print message and errorcode, and hang (in case stage 2 can't be loaded).
 .errorloading:
 	
 	push ax
@@ -60,41 +58,48 @@ start:
 	jmp hang
 	
 ;------------------------------------------------------------------------------; 
-; print: prints a string
-; inputs: SI=Pointer to string
+; print: Prints a string.
+; inputs: pointer to string in SI
 ; changes: Direction flag, AX 
 ; returns: none
 
 print:
-	; set up AH for interrupt, direction flag so the string is read correctly
+
+	; Set up AH for interrupt, direction flag so the string is read correctly.
 	mov ah, 0x0E
 	cld
+
 .loop:
-	; Loop through each character of string, print if not null 
+
+	; Loop through each character of string, print if not null.
 	lodsb
 	cmp al, 0
 	je .done
+
+	; Call interrupt and print string.
 	int 0x10
 	jmp .loop
+
 .done:
 	ret 
 	
 ;------------------------------------------------------------------------------;	
-; print_hex_byte: print 1 hex byte in BL.
+; print_hex_byte: Print 1 hex byte in BL.
 ; inputs:  byte to print in BL
 ; changes: AX, BX
 ; returns: none
 
 print_hex_byte:
-	; save bx; put 1st hex digit into BL. also prepare for printing via int 0x10
+
+	; Save BX; put 1st hex digit into BL. Also prepare for printing via int 0x10.
 	push bx
 	mov ah, 0x0E
 	
-	; print 1st digit
+	; Print 1st digit.
 	shr bx, 4
 	call print_hex_digit
 	
-	; print 2nd digit after restoring BX
+	; Print 2nd digit after restoring BX.
 	pop bx 
 	and bl, 0xF
 	call print_hex_digit
@@ -102,30 +107,31 @@ print_hex_byte:
 	ret
 
 ;------------------------------------------------------------------------------;
-; print_hex_digit: print 1 digit of hex in BL
+; print_hex_digit: Print 1 digit of hex in BL
 ; inputs: digit in BL
 ; changes: AX
 ; returns: none
 
 print_hex_digit:
-	; prepare for int 0x10
+
+	; Prepare for int 0x10.
 	mov ah, 0x0E
 	
-	; check if digit is a letter
+	; Check if digit is a letter.
 	cmp bl, 0xA
-	
-	; do according action
+
+	; Print accordingly:
 	jl .notletter
 	jmp .letter
 	
-; not letter: print a number
+; Not letter: print as number.
 .notletter:
 	add bl, '0'
 	mov al ,bl
 	int 0x10
 	ret
 	
-; letter: print a letter
+; Letter: print as letter.
 .letter:
 	sub bl, 0xA
 	add bl, 'A'
@@ -134,27 +140,35 @@ print_hex_digit:
 	ret
 	
 ;------------------------------------------------------------------------------;		
-; load_stage2: loads stage 2 into memory
+; load_stage2: Loads stage 2 into memory.
 ; inputs: none
 ; changes: AX, CX, DX 
 ; returns: status code (0 = success)
 
 load_stage2:
-	; use bios INT 0x13 AH=0x02 to load sectors.
-	mov ah, 0x02		; function number
+	
+	; Use bios INT 0x13 AH=0x02 to load sectors.
+	; AH = function number
+	; AL = number of sectors to load
+	; CH = cylinder
+	; CL = sector
+	; DH = head
+	; BX = buffer
+	mov ah, 0x02
 	mov al, SECTORS_TO_LOAD
-	mov ch, 0        	; cylinder
-	mov cl, 2 		    ; sector
-	mov dh, 0 	        ; head
-	mov bx, 0x7E00		; es:bx points to buffer; ES is 0, we want to load to physical 0x7E00 (right after bootsector)
+	mov ch, 0
+	mov cl, 2
+	mov dh, 0
+	mov bx, 0x7E00
 	int 0x13
 	ret
     
 ;------------------------------------------------------------------------------;
-; hang: infinitely stop the system.
+; hang: Infinitely stop the system.
 ; inputs: none
 ; changes: Interrupt flag
 ; returns: doesn't
+
 hang:
 	cli
 	hlt
@@ -168,6 +182,7 @@ loaderror db "error loading stage 2.",13,10,0
 	
 ;------------------------------------------------------------------------------;
 ; pad with zeroes. leave space for magic number.
+
 times 510-($-$$) db 0
 dw 0xAA55	
 
