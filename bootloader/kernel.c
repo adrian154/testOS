@@ -7,6 +7,10 @@
 #include "memorymap.h"
 #include "irq.h"
 
+void testHandler(struct InterruptFrame *frame) {
+	putChar('a');
+}
+
 void cmain() {     
 
 	/* Reset terminal so messages can be printed to screen. */           
@@ -38,8 +42,10 @@ void cmain() {
 	unsigned short numMapEntries = *(unsigned short *)0x83FE;
 	printMemoryMap(numMapEntries, (struct MemoryMapEntry *)0x8200);
 	
-	volatile int test = 5 / 0;
-	
+	installIRQHandler(1, testHandler);
+	asm("sti");
+	asm("int $0x20");
+
     /* Hang so CPU doesn't start executing random instructions. */
 	hang();
 

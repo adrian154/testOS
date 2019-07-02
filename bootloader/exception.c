@@ -76,7 +76,7 @@ void installISRs() {
 }
 
 /* Lookup table: Find name based on exception number. */
-const char *exceptionMessages[31] = {
+const char *exceptionMessages[32] = {
 	"Divide by Zero Exception",
 	"Debug Exception",
 	"Non-maskable Interrupt",
@@ -98,6 +98,14 @@ const char *exceptionMessages[31] = {
 	"Machine Check",
 	"SIMD Floating Point Exception",
 	"Virtualization Exception",
+	"Reserved",
+	"Reserved",
+	"Reserved",
+	"Reserved",
+	"Reserved",
+	"Reserved",
+	"Reserved",
+	"Reserved",
 	"Reserved",
 	"Security Exception",
 	"Reserved"

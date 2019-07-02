@@ -2,6 +2,7 @@
 #include "idt.h"
 #include "gdt.h"
 #include "pic.h"
+#include "textmode.h"
 
 extern void irq0();
 extern void irq1();
