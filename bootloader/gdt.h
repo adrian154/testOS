@@ -22,7 +22,7 @@ struct GDTEntry {
 	unsigned char baseMiddle;				/* Middle 16 bits of base. */
 	unsigned char access;					/* Access control information. */
 	unsigned char limitAndFlags;			/* Upper 4 bits of limit (the limit itself is only 20 bits) and 4 bits of attributes. */
-	unsigned short baseUpper;				/* Upper 16 bits of the base address. */
+	unsigned char baseUpper;				/* Upper 16 bits of the base address. */
 }__attribute__((packed));
 
 struct GDTPointer {

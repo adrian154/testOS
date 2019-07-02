@@ -22,8 +22,6 @@ void installGDTGate(unsigned char index, unsigned long base, unsigned int limit,
 	/* Finally, also add the access byte. */
 	gdt[index].access = access;
 	
-	printByte(flags); putChar(':');
-	printByte(gdt[index].limitAndFlags); putChar('\n');
 }
 
 /* Install a code and data descriptor. */

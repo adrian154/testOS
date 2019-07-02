@@ -38,7 +38,7 @@ void cmain() {
 	unsigned short numMapEntries = *(unsigned short *)0x83FE;
 	printMemoryMap(numMapEntries, (struct MemoryMapEntry *)0x8200);
 	
-	//volatile int test = 5 / 0;
+	volatile int test = 5 / 0;
 	
     /* Hang so CPU doesn't start executing random instructions. */
 	hang();

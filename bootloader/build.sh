@@ -6,7 +6,7 @@ dd if=./build/bootsector.bin of=disk.img
 nasm -f bin bootloader.asm -o ./build/bootloader.bin
 dd if=./build/bootloader.bin of=disk.img seek=1 bs=512
 
-# Assemble procted mode stuff.
+# Assemble protected mode stuff.
 nasm -f elf pmbootloader.asm -o ./build/pmbootloader.o
 nasm -f elf misc.asm -o ./build/misc_asm.o
 nasm -f elf idt.asm -o ./build/idt_asm.o
