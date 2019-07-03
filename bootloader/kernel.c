@@ -47,28 +47,31 @@ void cmain() {
 	asm("sti");
 	installIRQHandler(1, testHandler);
 	
-	struct RSDPDescriptor *RSDP = findRSDP();
+	findRSDP();
 	if(RSDP == 0) {
+	
 		terminalForeground = BRIGHT_RED;
-		printString("fatal: could not find ACPI tables.\n");
+		printString("fatal: could not find ACPI tables or ACPI tables are corrupted.\n");
 		terminalForeground = WHITE;
+	
 		printString("system halted. manually restart your computer.");
 		hang();
+	
 	} else {
+	
 		printString("found RSDP at 0x"); printDword((unsigned int)RSDP);
 		putChar('\n');
 		printString("OEMID is \"");
+		
 		for(unsigned int i = 0; i < 6; i++) {
 			putChar(RSDP->OEMID[i]);
 		}
+		
 		printString("\"\n");
+		
+		printString("ACPI revision is 0x"); printByte(RSDP->revision);
+	
 	}
-	
-	//asm("mov $0x0, %eax");
-	//asm("div %eax");
-	
-    /* Hang so CPU doesn't start executing random instructions. */
-	//hang();
 	
 	for(;;);
 } 

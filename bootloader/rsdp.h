@@ -1,3 +1,5 @@
+#include "bool.h"
+
 struct RSDPDescriptor {
 	char signature[8];
 	unsigned char checksum;
@@ -14,4 +16,7 @@ struct RSDPDescriptor2 {
 	unsigned char reserved[3];
 }__attribute__((packed));
 
-extern struct RSDPDescriptor *findRSDP();
+struct RSDPDescriptor *RSDP;
+struct RSDPDescriptor2 *RSDP2;
+
+extern bool findRSDP();
