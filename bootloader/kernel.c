@@ -7,7 +7,9 @@
 #include "memorymap.h"
 #include "irq.h"
 #include "acpi.h"
+#include "hpet.h"
 
+/* Test: Fired every keypress */
 void testHandler(struct InterruptFrame *frame) {
 	printString("keypress ");
 	inb(0x60);
@@ -84,6 +86,14 @@ void cmain() {
 	if(!initRSDT()) {
 		terminalForeground = BRIGHT_RED;
 		printString("fatal: could not initialize RSDT or RSDT is corrupted.");
+		hang();
+	}
+	
+	
+	if(!initHPET()) {
+		terminalForeground = BRIGHT_RED;
+		printString("fatal: could not initialize HPET");
+		hang();
 	}
 	
 	/* Hang forever. */

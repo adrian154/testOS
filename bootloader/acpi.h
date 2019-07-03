@@ -1,3 +1,6 @@
+#ifndef __ACPI_H
+#define __ACPI_H
+
 #include "bool.h"
 
 struct RSDPDescriptor {
@@ -39,3 +42,6 @@ struct RSDT *RSDT;
 
 extern bool findRSDP();
 extern bool initRSDT();
+extern struct SDTHeader *findTable(char signature[4]);
+
+#endif
