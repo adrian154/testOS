@@ -6,6 +6,7 @@
 #include "exception.h"
 #include "memorymap.h"
 #include "irq.h"
+#include "rsdp.h"
 
 void testHandler(struct InterruptFrame *frame) {
 	printString("keypress ");
@@ -45,6 +46,23 @@ void cmain() {
 
 	asm("sti");
 	installIRQHandler(1, testHandler);
+	
+	struct RSDPDescriptor *RSDP = findRSDP();
+	if(RSDP == 0) {
+		terminalForeground = BRIGHT_RED;
+		printString("fatal: could not find ACPI tables.\n");
+		terminalForeground = WHITE;
+		printString("system halted. manually restart your computer.");
+		hang();
+	} else {
+		printString("found RSDP at 0x"); printDword((unsigned int)RSDP);
+		putChar('\n');
+		printString("OEMID is \"");
+		for(unsigned int i = 0; i < 6; i++) {
+			putChar(RSDP->OEMID[i]);
+		}
+		printString("\"\n");
+	}
 	
 	//asm("mov $0x0, %eax");
 	//asm("div %eax");
