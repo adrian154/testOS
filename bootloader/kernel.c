@@ -53,7 +53,7 @@ void cmain() {
 	if(RSDP == 0) {
 	
 		terminalForeground = BRIGHT_RED;
-		printString("fatal: could not find ACPI tables or ACPI tables are corrupted.\n");
+		printString("fatal: could not find RSDP or RSDP is corrupted.\n");
 		terminalForeground = WHITE;
 	
 		printString("system halted. manually restart your computer.");
@@ -80,16 +80,12 @@ void cmain() {
 	}
 	putChar('\n');
 	
-	/* Also find RSDT. */
-	RSDT = (struct RSDT *)RSDP->RSDTAddress;
-	if(!verifyChecksum(RSDT)) {
+	/* Initialize RSDT. */
+	if(!initRSDT()) {
 		terminalForeground = BRIGHT_RED;
-		printString("fatal: RSDT checksum does not check out. it may be corrupted.");
-		hang();
+		printString("fatal: could not initialize RSDT or RSDT is corrupted.");
 	}
 	
-	printString("0x");
-	printDword(RSDT->length);
-	
+	/* Hang forever. */
 	for(;;);
 } 

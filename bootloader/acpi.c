@@ -52,7 +52,7 @@ bool findRSDP() {
 
 }
 
-bool verifyChecksum(struct SDTHeader *header) {
+bool checksum(struct SDTHeader *header) {
 	
 	unsigned char total = 0;
 	
@@ -61,6 +61,48 @@ bool verifyChecksum(struct SDTHeader *header) {
 		total += ((unsigned char *) header)[i];
 	}
 
-	return total == 0;
+	return total;
 	
+}
+
+bool initRSDT() {
+	
+	/* Dereference RSDT and verify checksum. */
+	unsigned char sum;
+	RSDT = (struct RSDT *)RSDP->RSDTAddress;
+	
+	if((sum = checksum(&RSDT->header)) != 0) {
+		terminalForeground = BRIGHT_RED;
+		
+		printString("initRSDT(): RSDT checksum does not equal zero, got 0x");
+		printByte(sum);
+		
+		return false;
+	}
+
+	return true;
+}
+
+struct SDTHeader *findTable(char signature[4]) {
+	unsigned int numEntries = (RSDT->header.length - sizeof(RSDT->header)) / 4;
+	unsigned int *firstAddress = (unsigned int *)&(RSDT->otherTables);
+	
+	for(unsigned int i = 0; i < numEntries; i++) {
+		struct SDTHeader *header = (struct SDTHeader *)*firstAddress;
+		
+		bool found = true;
+		for(unsigned int i = 0; i < 4; i++) {
+			if(header->signature[i] != signature[i]) {
+				found = false;	
+			}
+		}
+		
+		if(found) {
+			return header;	
+		}
+		
+		firstAddress++;
+	}
+	
+	return 0;
 }

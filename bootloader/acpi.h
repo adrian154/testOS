@@ -26,11 +26,16 @@ struct SDTHeader {
 	unsigned int OEMRevision;
 	unsigned int creatorID;
 	unsigned int creatorRevision;
-};
+}__attribute__((packed));
+
+struct RSDT {
+	struct SDTHeader header;
+	unsigned int otherTables;
+}__attribute__((packed));
 
 struct RSDPDescriptor *RSDP;
 struct RSDPDescriptor2 *RSDP2;
-struct SDTHeader *RSDT;
+struct RSDT *RSDT;
 
 extern bool findRSDP();
-extern bool verifyChecksum(struct SDTHeader *header);
+extern bool initRSDT();
