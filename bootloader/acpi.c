@@ -1,4 +1,4 @@
-#include "rsdp.h"
+#include "acpi.h"
 #include "textmode.h"
 #include "bool.h"
 
@@ -49,4 +49,18 @@ bool findRSDP() {
 	
 	printString("findRSDP(): did not find RSDP in 0xE0000 through 0xFFFFF\n");
 	return false;
+
+}
+
+bool verifyChecksum(struct SDTHeader *header) {
+	
+	unsigned char total = 0;
+	
+	/* Some dirty pointer arithmetic to sum up table. */
+	for(unsigned i = 0; i < header->length; i++) {
+		total += ((unsigned char *) header)[i];
+	}
+
+	return total == 0;
+	
 }

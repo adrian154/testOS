@@ -6,7 +6,7 @@
 #include "exception.h"
 #include "memorymap.h"
 #include "irq.h"
-#include "rsdp.h"
+#include "acpi.h"
 
 void testHandler(struct InterruptFrame *frame) {
 	printString("keypress ");
@@ -44,9 +44,11 @@ void cmain() {
 	unsigned short numMapEntries = *(unsigned short *)0x83FE;
 	printMemoryMap(numMapEntries, (struct MemoryMapEntry *)0x8200);
 
+	/* Enable interrupts. Add a test handler. */
 	asm("sti");
 	installIRQHandler(1, testHandler);
 	
+	/* Try to locate RSDP. If it cannot be found, print an error. */
 	findRSDP();
 	if(RSDP == 0) {
 	
@@ -57,21 +59,37 @@ void cmain() {
 		printString("system halted. manually restart your computer.");
 		hang();
 	
-	} else {
-	
-		printString("found RSDP at 0x"); printDword((unsigned int)RSDP);
-		putChar('\n');
-		printString("OEMID is \"");
-		
-		for(unsigned int i = 0; i < 6; i++) {
-			putChar(RSDP->OEMID[i]);
-		}
-		
-		printString("\"\n");
-		
-		printString("ACPI revision is 0x"); printByte(RSDP->revision);
-	
 	}
+	
+	/* Print some debug messages. */
+	printString("found RSDP at 0x"); printDword((unsigned int)RSDP);
+	putChar('\n');
+	
+	printString("OEMID is \"");
+	for(unsigned int i = 0; i < 6; i++) {
+		putChar(RSDP->OEMID[i]);
+	}
+	printString("\"\n");
+	
+	/* Warning, because ACPI 2.0 may cause some weirdness on dodgy machines. */
+	printString("ACPI revision is 0x"); printByte(RSDP->revision);
+	if(RSDP->revision > 0) {
+		terminalForeground = BRIGHT_YELLOW;
+		printString("warning: testOS does not support ACPI 2.0+\n");
+		terminalForeground = WHITE;
+	}
+	putChar('\n');
+	
+	/* Also find RSDT. */
+	RSDT = (struct RSDT *)RSDP->RSDTAddress;
+	if(!verifyChecksum(RSDT)) {
+		terminalForeground = BRIGHT_RED;
+		printString("fatal: RSDT checksum does not check out. it may be corrupted.");
+		hang();
+	}
+	
+	printString("0x");
+	printDword(RSDT->length);
 	
 	for(;;);
 } 
