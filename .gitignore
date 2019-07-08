@@ -10,6 +10,12 @@
 *.img
 *.iso
 
+# Bochs configurations
+.bxrc
+
+# Dump files
+.dmp
+
 # Etc.
 .DS_Store
 .DS_Store?

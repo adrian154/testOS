@@ -132,12 +132,13 @@ void faultHandler(struct ExceptionFrame *frame) {
 		putChar('\n');
 		printString("ESI="); printDword(frame->esi);
 		printString(" EDI="); printDword(frame->edi);
-		printString(" ESP="); printDword(frame->esp);
-		printString(" EBP="); printDword(frame->ebp);
+		putChar('\n');
+		printString("(kernel) ESP="); printDword(frame->kernelEsp);
+		printString(" EBP="); printDword(frame->kernelEbp);
 		putChar('\n');
 		printString("(user) EIP="); printDword(frame->eip);
 		printString(" CS="); printDword(frame->cs);
-		printString(" SS="); printDword(frame->ss);
+		printString(" SS="); printDword(frame->userSs);
 		printString(" ESP="); printDword(frame->userEsp);
 		putChar('\n');
 		printString("EFLAGS="); printDword(frame->eflags);

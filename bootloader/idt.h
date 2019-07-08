@@ -9,16 +9,16 @@
 
 struct ExceptionFrame {
 	unsigned int gs, fs, es, ds;
-	unsigned int edi, esi, ebp, esp, ebx, edx, ecx, eax;
+	unsigned int edi, esi, kernelEbp, kernelEsp, ebx, edx, ecx, eax;
 	unsigned int interruptNumber, errorCode;
-	unsigned int eip, cs, eflags, userEsp, ss;
+	unsigned int eip, cs, eflags, userEsp, userSs;
 };
 
 struct InterruptFrame {
 	unsigned int gs, fs, es, ds;
 	unsigned int edi, esi, ebp, esp, ebx, edx, ecx, eax;
 	unsigned int interruptNumber;
-	unsigned int eip, cs, eflags, userEsp, ss;
+	unsigned int eip, cs, eflags, userEsp, userSs;
 };
 
 /* Typedef to make function pointers less weird. */

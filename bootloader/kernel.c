@@ -53,14 +53,12 @@ void cmain() {
 	/* Try to locate RSDP. If it cannot be found, print an error. */
 	findRSDP();
 	if(RSDP == 0) {
-	
 		terminalForeground = BRIGHT_RED;
 		printString("fatal: could not find RSDP or RSDP is corrupted.\n");
 		terminalForeground = WHITE;
 	
 		printString("system halted. manually restart your computer.");
 		hang();
-	
 	}
 	
 	/* Print some debug messages. */
@@ -89,7 +87,7 @@ void cmain() {
 		hang();
 	}
 	
-	
+	/* Try to initialize HPET. */
 	if(!initHPET()) {
 		terminalForeground = BRIGHT_RED;
 		printString("fatal: could not initialize HPET");

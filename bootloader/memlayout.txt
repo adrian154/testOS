@@ -1,9 +1,0 @@
-Locations of Things:
-
-memory				sector	    description      														file
-======				======		===========																====
-0x7C00 to 0x7E00	0			bootsector																bootsector.asm
-0x7E00 to 0x8200	1-2			bootloader																bootloader.asm
-0x8200 to 0x8400	3			memory map (empty; populated by bootloader via e820)					(bootloader.asm)
-0x8400 to 0x9600	4-12		protected mode bootloader (big because stack)							pmbootloaderasm
-0x9600 to ???		13-?		protected mode kernel													kernel.c
