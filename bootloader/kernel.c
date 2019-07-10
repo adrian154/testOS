@@ -8,6 +8,8 @@
 #include "irq.h"
 #include "acpi.h"
 #include "hpet.h"
+#include "pit.h"
+#include "paging.h"
 
 /* Test: Fired every keypress */
 void testHandler(struct InterruptFrame *frame) {
@@ -96,6 +98,10 @@ void cmain() {
 		hang();
 	}
 	
+	installPIT();
+	
+	setupPaging();
+	printString("paging enabled.\n");
 	/* Hang forever. */
 	for(;;);
 } 

@@ -7,7 +7,7 @@ BITS 16
 ORG 0x7C00
 
 ; Constants.
-SECTORS_TO_LOAD equ 26
+SECTORS_TO_LOAD equ 31
 
 ; Set CS/IP by doing a far jump.
 jmp 0x0000:start
