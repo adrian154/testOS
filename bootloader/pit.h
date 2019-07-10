@@ -18,4 +18,7 @@
 #define PIT_CHANNEL2_DATA	0x42
 #define PIT_COMMAND			0x43
 
+#define PIT_FREQ			1193182
+
+extern volatile int tick;
 extern void installPIT();

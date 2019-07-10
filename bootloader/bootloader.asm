@@ -10,6 +10,9 @@ ORG 0x7E00
 
 start:
 
+	; Save disk number.
+	mov [diskNum], dx
+
 	; print welcome message
 	mov si, welcome
 	call print
@@ -26,10 +29,20 @@ start:
 	cmp ax, 0
 	je .a20_fail
 
+	; test if BIOS int 0x13 extensions are present
+	call checkInt13Ext
+	cmp ax, 0
+	je .int13_fail
+	
+	; load kernel
+	call loadKernel
+	cmp ax, 0
+	je .loadfail
+	
 	; print message and set protected mode
 	mov si, pmstart
 	call print
-	call set_pm
+	;call set_pm
 
     ; hang system.
 	jmp hang
@@ -52,7 +65,55 @@ start:
 	call print
 	jmp hang
 	
+.int13_fail:
+	mov si, int13fail
+	call print
+	jmp hang
+	
+.loadfail:
+	mov si, loadKernelFail
+	call print
+	jmp hang
+	
+;------------------------------------------------------------------------------;
+; checkInt13Ext: checks if int13h extensions are present
 
+checkInt13Ext:
+	mov ah, 0x41
+	mov bx, 0x55AA
+	int 0x13
+	xor ax, ax
+	jc .notSupported
+	mov ax, 1
+.notSupported:
+	ret
+
+;------------------------------------------------------------------------------;
+; loadKernel: load the rest of the kernel to 1M
+
+loadKernel:
+	mov ah, 0x42
+	mov si, dap
+	mov dx, [diskNum]
+	
+	;int 0x13
+	cmp ah, 0
+	jne .loadfail
+	
+	mov ax, 1
+	ret
+	
+.loadfail:
+	mov ax, 0
+	ret
+	
+dap:
+	size		db 0x10
+	reserved 	db 0
+	numBlocks 	dw 27
+	buffer 		dd 0x00100000
+	startBlock	dq 0x0000000000000004
+	
 ;------------------------------------------------------------------------------;	
 ; set_a20: sets a20 line with various methods.
 ; inputs: none 
@@ -313,7 +374,7 @@ do_e820:
 	mov eax, 0xE820
 	mov ebx, 0
 	
-	mov di, 0x8200				; load map at 0x8E00, 1M above bootloader.
+	mov di, 0x8400				; load map at 0x8200, 1M above bootloader.
 	mov ecx, 24					; entries will not be >24bytes large
 	mov edx, 0x534D4150			; magic number.
 	
@@ -583,8 +644,11 @@ DATA_SEG equ gdt_data_entry - gdt_start
 welcome db "stage 2 started.",13,10,0
 mmap_fail_msg db "failed to get memory map: ",13,10,0
 a20set db "enabling A20 line..",13,10,0
-a20fail db "failed to enable A20 line via any method. your hardware may not be supported.",13,10,0.
+a20fail db "failed to enable A20 line via any method. your hardware may not be supported.",13,10,0
+int13fail db "int13 LBA extension is not supported.",13,10,0
+loadKernelFail db "failed to load kernel.",13,10,0
 pmstart db "jumping to protected mode..",13,10,0
+diskNum db 0
 
 ;------------------------------------------------------------------------------;
 ; protected mode code
@@ -610,5 +674,4 @@ pm_boot:
 	
 ;------------------------------------------------------------------------------;
 ; pad sector with 0s
-times 1022-($-$$) db 0
-debug dw 0xFEEF
+times 1536-($-$$) db 0

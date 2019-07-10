@@ -9,7 +9,7 @@
 #include "acpi.h"
 #include "hpet.h"
 #include "pit.h"
-#include "paging.h"
+//#include "paging.h"
 
 /* Test: Fired every keypress */
 void testHandler(struct InterruptFrame *frame) {
@@ -45,8 +45,8 @@ void cmain() {
 	
 	/* Dump memory map. */
 	printString("parsing memory map...\n");
-	unsigned short numMapEntries = *(unsigned short *)0x83FE;
-	printMemoryMap(numMapEntries, (struct MemoryMapEntry *)0x8200);
+	unsigned short numMapEntries = *(unsigned short *)0x85FE;
+	printMemoryMap(numMapEntries, (struct MemoryMapEntry *)0x8400);
 
 	/* Enable interrupts. Add a test handler. */
 	asm("sti");
@@ -91,7 +91,6 @@ void cmain() {
 		hang();
 	}
 	
-	
 	if(!initHPET()) {
 		terminalForeground = BRIGHT_RED;
 		printString("fatal: could not initialize HPET");
@@ -99,9 +98,11 @@ void cmain() {
 	}
 	
 	installPIT();
+	printString("initialized PIT.\n");
 	
-	setupPaging();
-	printString("paging enabled.\n");
+	//setupPaging();
+	//printString("enabled paging.\n");
+	
 	/* Hang forever. */
 	for(;;);
 } 

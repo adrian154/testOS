@@ -2,7 +2,7 @@
 ; then jumps to OS
 
 ; start environment: ??? 
-; loaded in protected mode at 0x8400
+; loaded in protected mode at 1M
 BITS 32
 
 ; entry point, also declare extern that is the C part of our kernel
@@ -12,8 +12,8 @@ EXTERN cmain
 start:           
 
 	; set up stack
-	mov ebp, stack_bottom + 0x8400
-	mov esp, stack_top + 0x8400
+	mov ebp, stack_bottom
+	mov esp, stack_top
 
 	; call kernel
 	call cmain
