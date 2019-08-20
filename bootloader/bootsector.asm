@@ -7,7 +7,7 @@ BITS 16
 ORG 0x7C00
 
 ; Constants.
-SECTORS_TO_LOAD equ 30
+SECTORS_TO_LOAD equ 3
 
 ; Set CS/IP by doing a far jump.
 jmp 0x0000:start
@@ -34,12 +34,12 @@ start:
    	mov si, welcome
    	call print
    	
-   	; Load stage 2 and far jump to it.
+   	; Load stage 2 and far jump to it. Save DL on stack first.
    	call load_stage2
    	cmp ah, 0
    	jne .errorloading
-   	jmp 0x0000:0x7E00
-   
+	jmp 0x0000:0x7E00
+    
 	; Hang, just in case.
     jmp hang  
     
