@@ -5,6 +5,8 @@
 BITS 16
 ORG 0x7E00
 
+SECTORS_TO_LOAD equ 27
+
 ;------------------------------------------------------------------------------;
 ; start: entry point
 
@@ -111,7 +113,7 @@ loadKernel:
 DAP:
 	sizeOfDAP db 0x10
 	unused db 0
-	sectorsToRead dw 27
+	sectorsToRead dw SECTORS_TO_LOAD
 	rdOffset dw 0x8600
 	rdSegment dw 0x0000
 	startSectors dq 5
@@ -658,25 +660,43 @@ diskNum db 0
 
 BITS 32
 pm_boot:
-
-	mov eax, 0xDEADBEEA
-	mov eax, 0xDEADBEEB
-	mov ebx, 0xDEADBEEC
 	
-	;mov ds, ax
-	;mov es, ax
-	;mov fs, ax
-	;mov gs, ax
-	;mov ss, ax
-	;sti
+	; not sure why but this fixes everything
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	
+	; load segment registers with descriptors
+	mov ax, DATA_SEG
+	mov ds, ax
+	mov es, ax
+	mov fs, ax
+	mov gs, ax
+	mov ss, ax
+	
+	; copy memory from 0x8600 to 1M
+	xor eax, eax
+	mov esi, 0x100000
+	
+.loop:
+	cmp eax, SECTORS_TO_LOAD*512
+	je .done
+	mov ebx, [eax + 0x8600]
+	mov [esi], ebx
+	add esi, 4
+	add eax, 4
+	jmp .loop
+	
+.done:	
+	
 	
 	; Jump to rest of PM bootloader.
-	;jmp 0x8400
+	jmp 0x100000
 	
-.pmhalt:
-	cli
-	hlt
-	jmp .pmhalt
+	jmp hang
 	
 ;------------------------------------------------------------------------------;
 ; pad sector with 0s
