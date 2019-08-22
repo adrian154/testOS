@@ -658,11 +658,12 @@ diskNum db 0
 
 BITS 32
 pm_boot:
+
+	mov eax, 0xDEADBEEA
+	mov eax, 0xDEADBEEB
+	mov ebx, 0xDEADBEEC
 	
-	; in protected mode, segment registers values hold "descriptors"
-	; load segment registers with new full-memory data segment descriptor.
-	mov ax, DATA_SEG
-	mov ds, ax
+	;mov ds, ax
 	;mov es, ax
 	;mov fs, ax
 	;mov gs, ax
