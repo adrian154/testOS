@@ -45,7 +45,7 @@ start:
 	mov si, pmstart
 	call print
 	
-	;call set_pm
+	call set_pm
 
     ; hang system.
 	jmp hang
@@ -96,6 +96,9 @@ checkInt13Ext:
 
 loadKernel:
 
+	xor eax, eax
+	xor edx, edx
+	
 	mov ah, 0x42		; AH = function number (0x42 = extended read)
 	mov dl, [diskNum]	; DL = disk number (restore disk number since DX gets changed after boot)
 	mov si, DAP			; DS:SI = address of DAP (...)
@@ -103,15 +106,15 @@ loadKernel:
 	int 0x13
 	mov ah, al
 	
-	jmp hang
+	ret
 	
 DAP:
 	sizeOfDAP db 0x10
 	unused db 0
-	sectorsToRead dw 1
+	sectorsToRead dw 27
 	rdOffset dw 0x8600
 	rdSegment dw 0x0000
-	startSectors dq 0
+	startSectors dq 5
 	
 ;------------------------------------------------------------------------------;	
 ; set_a20: sets a20 line with various methods.
@@ -595,6 +598,7 @@ set_pm:
 	mov cr0, eax
 	
 	jmp CODE_SEG:pm_boot
+	;jmp hang	
 	
 ;------------------------------------------------------------------------------;
 ; Some various GDT info.
@@ -659,17 +663,19 @@ pm_boot:
 	; load segment registers with new full-memory data segment descriptor.
 	mov ax, DATA_SEG
 	mov ds, ax
-	mov es, ax
-	mov fs, ax
-	mov gs, ax
-	mov ss, ax
-	sti
+	;mov es, ax
+	;mov fs, ax
+	;mov gs, ax
+	;mov ss, ax
+	;sti
 	
 	; Jump to rest of PM bootloader.
-	jmp 0x8400
+	;jmp 0x8400
 	
+.pmhalt:
 	cli
 	hlt
+	jmp .pmhalt
 	
 ;------------------------------------------------------------------------------;
 ; pad sector with 0s
