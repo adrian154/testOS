@@ -29,6 +29,9 @@ start:
 	mov sp, 0x7BFF
 	
 	sti
+	
+	; Set video mode.
+	call textmode
 
    	; Show a success message.
    	mov si, welcome
@@ -56,6 +59,15 @@ start:
 	call print_hex_byte
 	
 	jmp hang
+	
+;------------------------------------------------------------------------------; 
+; textmode: Enables textmode.
+
+textmode:
+	xor ah, ah
+	mov al, 0x03
+	int 0x10
+	ret
 	
 ;------------------------------------------------------------------------------; 
 ; print: Prints a string.

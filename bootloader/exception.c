@@ -124,24 +124,32 @@ void faultHandler(struct ExceptionFrame *frame) {
 		printString(" (error code 0x"); printDword(frame->errorCode); printString(").\n");
 		
 		terminalForeground = WHITE;
+
+		printString("EAX=0x"); printDword(frame->eax);
+		printString(" EBX=0x"); printDword(frame->ebx);
+		printString(" ECX=0x"); printDword(frame->ecx);
+		printString(" EDX=0x"); printDword(frame->edx);
+		putChar('\n');
 		
-		printString("EAX="); printDword(frame->eax);
-		printString(" EBX="); printDword(frame->ebx);
-		printString(" ECX="); printDword(frame->ecx);
-		printString(" EDX="); printDword(frame->edx);
+		printString("ESI=0x"); printDword(frame->esi);
+		printString(" EDI=0x"); printDword(frame->edi);
+		printString(" ESP=0x"); printDword(frame->userEsp);
+		printString("  SS=0x"); printDword(frame->userSs);
 		putChar('\n');
-		printString("ESI="); printDword(frame->esi);
-		printString(" EDI="); printDword(frame->edi);
+		
+		printString(" DS=0x"); printDword(frame->ds);
+		printString("  ES=0x"); printDword(frame->es);
+		printString("  FS=0x"); printDword(frame->fs);
+		printString("  GS=0x"); printDword(frame->gs);
 		putChar('\n');
-		printString("(kernel) ESP="); printDword(frame->kernelEsp);
-		printString(" EBP="); printDword(frame->kernelEbp);
+		
+		printString(" CS=0x"); printDword(frame->cs);
+		printString(" EIP=0x"); printDword(frame->eip);
+		printString(" EFLAGS=0x"); printDword(frame->eflags);
 		putChar('\n');
-		printString("(user) EIP="); printDword(frame->eip);
-		printString(" CS="); printDword(frame->cs);
-		printString(" SS="); printDword(frame->userSs);
-		printString(" ESP="); printDword(frame->userEsp);
-		putChar('\n');
-		printString("EFLAGS="); printDword(frame->eflags);
+		
+		printString("(kernel) ESP=0x"); printDword(frame->kernelEsp); 
+		printString(" EBP=0x"); printDword(frame->kernelEbp);
 		putChar('\n');
 		
 		putChar('\n');
