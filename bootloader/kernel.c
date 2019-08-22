@@ -96,8 +96,8 @@ void cmain() {
 		hang();
 	}
 	
-	installPIT();
-	printString("initialized PIT.\n");
+	//installPIT();
+	//printString("initialized PIT.\n");
 	
 	//setupPaging();
 	//printString("enabled paging.\n");

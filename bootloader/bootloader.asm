@@ -35,13 +35,16 @@ start:
 	je .int13_fail
 	
 	; load kernel
+	mov dx, [diskNum]
 	call loadKernel
-	cmp ax, 0
-	je .loadfail
+	
+	cmp al, 0
+	jne .loadfail
 	
 	; print message and set protected mode
 	mov si, pmstart
 	call print
+	
 	;call set_pm
 
     ; hang system.
@@ -89,30 +92,26 @@ checkInt13Ext:
 	ret
 
 ;------------------------------------------------------------------------------;
-; loadKernel: load the rest of the kernel to 1M
+; loadKernel: load the rest of the kernel to 0x8600 and copy to 1M later
 
 loadKernel:
-	mov ah, 0x42
-	mov si, dap
-	mov dx, [diskNum]
+
+	mov ah, 0x42		; AH = function number (0x42 = extended read)
+	mov dl, [diskNum]	; DL = disk number (restore disk number since DX gets changed after boot)
+	mov si, DAP			; DS:SI = address of DAP (...)
+
+	int 0x13
+	mov ah, al
 	
-	;int 0x13
-	cmp ah, 0
-	jne .loadfail
+	jmp hang
 	
-	mov ax, 1
-	ret
-	
-.loadfail:
-	mov ax, 0
-	ret
-	
-dap:
-	size		db 0x10
-	reserved 	db 0
-	numBlocks 	dw 27
-	buffer 		dd 0x00100000
-	startBlock	dq 0x0000000000000004
+DAP:
+	sizeOfDAP db 0x10
+	unused db 0
+	sectorsToRead dw 1
+	rdOffset dw 0x8600
+	rdSegment dw 0x0000
+	startSectors dq 0
 	
 ;------------------------------------------------------------------------------;	
 ; set_a20: sets a20 line with various methods.
