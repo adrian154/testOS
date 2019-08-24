@@ -3,6 +3,7 @@
 
 extern void printMemoryMap(unsigned short numEntries, struct MemoryMapEntry *map) {
 	for(unsigned short i = 0; i < numEntries; i++) {
+		
 		struct MemoryMapEntry *entry = map;
 		printString("entry 0x"); printByte(i);
 		printString(": base=0x"); printDword(entry->baseUpper); printDword(entry->baseLower);

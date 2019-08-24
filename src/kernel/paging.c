@@ -20,4 +20,5 @@ void setupPaging() {
 	
 	loadPageDirectory((unsigned int)pageDirectory);
 	enablePaging();
+	
 }

@@ -1,12 +1,12 @@
 OUTPUT_FORMAT("binary")
 ENTRY(start)
 
-phys = 0x00100000;
+. = 0x00100000;
+
+kernelPhysicalStart = .;
 
 SECTIONS
 {
-
-	. = phys;
 
 	.text : {
 		*(.text)
@@ -24,5 +24,6 @@ SECTIONS
 		*(.bss)
 	}
 	
-	end = .;
 }
+
+kernelPhysicalEnd = .;

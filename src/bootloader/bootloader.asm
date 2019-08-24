@@ -443,7 +443,7 @@ do_e820:
 .done:
 	; return 0 for success; also save BP (number of entries written)
 	mov ax, 0
-	mov [0x83FE], bp
+	mov [0x85FE], bp
 	clc
 	ret
 	

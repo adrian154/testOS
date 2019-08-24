@@ -8,12 +8,17 @@ BITS 32
 ; entry point, also declare extern that is the C part of our kernel
 GLOBAL start
 EXTERN cmain
+EXTERN kernelPhysicalStart
+EXTERN kernelPhysicalEnd
 
 start:           
 
 	; set up stack
 	mov ebp, stack_bottom
 	mov esp, stack_top
+
+	push kernelPhysicalEnd
+	push kernelPhysicalStart
 
 	; call kernel
 	call cmain
