@@ -13,7 +13,7 @@
 
 /* Test: Fired every keypress */
 void testHandler(struct InterruptFrame *frame) {
-	printString("keypress ");
+	//printString("keypress ");
 	inb(0x60);
 }
 
@@ -97,9 +97,12 @@ void cmain(unsigned int kernelPhysicalStart, unsigned int kernelPhysicalEnd) {
 		hang();
 	}
 	
+	printString("kernel occupies ");
 	printDword(kernelPhysicalStart);
-	printString(" ");
+	printString(" to ");
 	printDword(kernelPhysicalEnd);
+	
+	setBottomMsg("Welcome to TestOS - (C) Adrian Zhang - https://github.com/adrian154/testOS");
 	
 	//installPIT();
 	//printString("initialized PIT.\n");

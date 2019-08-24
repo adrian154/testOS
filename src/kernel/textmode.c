@@ -26,6 +26,14 @@ void clearScreen() {
 	}
 }
 
+void moveScrCursor(unsigned int x, unsigned int y) {
+	unsigned short position = y * 80 + x;
+	outb(0x3D4, 0x0F);
+	outb(0x3D5, (unsigned char) (position & 0xFF));
+	outb(0x3D4, 0x0E);
+	outb(0x3D5, (unsigned char) ((position >> 8) & 0xFF));
+}
+
 /* Reset terminal. */
 void resetTerminal() {
 	
@@ -82,6 +90,7 @@ void putChar(char character) {
 		terminalY = 24;
 	}
 	
+	moveScrCursor(terminalX, terminalY);
 	
 }
 
@@ -110,3 +119,20 @@ void printDword(unsigned int dword) {
 	printWord(dword & 0xFFFF);
 }
 
+void setBottomMsg(const char *msg) {
+	unsigned int tmpX, tmpY;
+	tmpX = terminalX;
+	tmpY = terminalY;
+	
+	terminalX = 0;
+	terminalY = 24;
+	terminalForeground = BLACK;
+	terminalBackground = LIGHT_GRAY;
+	printString("                                                                                ");
+	terminalX = 0;
+	printString(msg);
+	
+	terminalX = tmpX;
+	terminalY = tmpY;
+	moveScrCursor(terminalX, terminalY);
+}
