@@ -25,4 +25,4 @@ extern unsigned int strlen(const char *string);
 extern void printByte(unsigned char byte);
 extern void printWord(unsigned short word);
 extern void printDword(unsigned int dword);
-extern void setBottomMsg(const char *msg);
+extern void moveCursor(unsigned int x, unsigned int y);

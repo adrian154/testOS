@@ -29,9 +29,10 @@ i686-elf-gcc -c ./kernel/acpi.c -o ../build/acpi.o -std=gnu99 -ffreestanding -Wa
 i686-elf-gcc -c ./kernel/hpet.c -o ../build/hpet.o -std=gnu99 -ffreestanding -Wall -Wextra -g
 i686-elf-gcc -c ./kernel/pit.c -o ../build/pit.o -std=gnu99 -ffreestanding -Wall -Wextra -g
 i686-elf-gcc -c ./kernel/paging.c -o ../build/paging.o -std=gnu99 -ffreestanding -Wall -Wextra -g
+i686-elf-gcc -c ./kernel/serial.c -o ../build/serial.o -std=gnu99 -ffreestanding -Wall -Wextra -g
 
 # Link kernel binary.
-i686-elf-gcc -T ./kernel/linker.ld -o ../build/kernel.bin -ffreestanding -O0 -nostdlib ../build/pmbootloader.o ../build/kernel.o ../build/misc.o ../build/misc_asm.o ../build/textmode.o ../build/idt.o ../build/idt_asm.o ../build/exception.o ../build/exception_asm.o ../build/gdt_asm.o ../build/gdt.o ../build/memorymap.o ../build/irq_asm.o ../build/irq.o ../build/pic.o ../build/acpi.o ../build/hpet.o ../build/paging.o ../build/paging_asm.o
+i686-elf-gcc -T ./kernel/linker.ld -o ../build/kernel.bin -ffreestanding -O0 -nostdlib ../build/pmbootloader.o ../build/kernel.o ../build/misc.o ../build/misc_asm.o ../build/textmode.o ../build/idt.o ../build/idt_asm.o ../build/exception.o ../build/exception_asm.o ../build/gdt_asm.o ../build/gdt.o ../build/memorymap.o ../build/irq_asm.o ../build/irq.o ../build/pic.o ../build/acpi.o ../build/hpet.o ../build/paging.o ../build/paging_asm.o ../build/serial.o
 
 # Write kernel binary.
 dd if=../build/kernel.bin of=../img/disk.img seek=5 bs=512

@@ -10,10 +10,10 @@
 #include "hpet.h"
 #include "pit.h"
 #include "paging.h"
+#include "serial.h"
 
 /* Test: Fired every keypress */
 void testHandler(struct InterruptFrame *frame) {
-	//printString("keypress ");
 	inb(0x60);
 }
 
@@ -38,6 +38,10 @@ void cmain(unsigned int kernelPhysicalStart, unsigned int kernelPhysicalEnd) {
 	/* Install handlers for interrupst 0-31 (CPU-generated exceptions. */
 	installISRs();
 	printString("installed exception handler.\n");
+	
+	/* Set up serial. */
+	initSerial();
+	printString("initialized COM1.\n");
 	
 	/* Set up IRQs. */
 	installIRQs();
@@ -102,7 +106,7 @@ void cmain(unsigned int kernelPhysicalStart, unsigned int kernelPhysicalEnd) {
 	printString(" to ");
 	printDword(kernelPhysicalEnd);
 	
-	setBottomMsg("Welcome to TestOS - (C) Adrian Zhang - https://github.com/adrian154/testOS");
+	serialWrite("the fitness gram pacer test is a multistage aerobic capacity test.");
 	
 	//installPIT();
 	//printString("initialized PIT.\n");
