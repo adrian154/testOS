@@ -105,14 +105,15 @@ void cmain(unsigned int kernelPhysicalStart, unsigned int kernelPhysicalEnd) {
 	printDword(kernelPhysicalStart);
 	printString(" to ");
 	printDword(kernelPhysicalEnd);
+	putChar('\n');
 	
 	serialWrite("the fitness gram pacer test is a multistage aerobic capacity test.");
 	
 	//installPIT();
 	//printString("initialized PIT.\n");
 	
-	//setupPaging();
-	//printString("enabled paging.\n");
+	setupPaging();
+	printString("enabled paging.\n");
 	
 	/* Hang forever. */
 	for(;;);

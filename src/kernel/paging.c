@@ -12,7 +12,7 @@ void setupPaging() {
 	}
 	
 	/* Identity page 1M of memory. */
-	for(unsigned int i = 0; i < 256; i++) {
+	for(unsigned int i = 0; i < 1024; i++) {
 		pageTable[i] = (i * 0x1000) | PTE_KERNEL | PTE_READWRITE | PTE_PRESENT;
 	}
 	
