@@ -118,6 +118,9 @@ DAP:
 	rdSegment dw 0x0000
 	startSectors dq 5
 	
+;------------------------------------------------------------------------------;
+; setupPaging: set up paging
+	
 ;------------------------------------------------------------------------------;	
 ; set_a20: sets a20 line with various methods.
 ; inputs: none 
