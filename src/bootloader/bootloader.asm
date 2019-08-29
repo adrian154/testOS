@@ -120,6 +120,62 @@ DAP:
 	
 ;------------------------------------------------------------------------------;
 ; setupPaging: set up paging
+
+setupPaging:
+
+	; We need to map (1M -> kernelSize) to 0xE00100000
+	; and then identity page the lower 1M, which contains several values of interest
+	
+	cli
+	
+	; first, set up a PDE. Our PDE will be at 0x9000.
+	; It will occupy exactly 4K and end at 0xA000.
+	; Our page table will be at 0xA000.
+
+	xor eax, eax
+	mov esi, 0x9000
+	
+.PDELoop:	
+
+	cmp eax, 1024
+	je .PDELoopExit
+	mov dword [esi], 0x00000002
+	
+	inc eax
+	add esi, 4
+	
+	jmp .PDELoop
+
+.PDELoopExit:
+
+	; Set up page table loop.
+	xor eax, eax
+	mov esi, 0xA000
+	
+.PTELoop:
+	
+	cmp eax, 1024
+	je .PTELoopExit
+	
+	; 0x3 is readwriteable and present.
+	push eax
+	shl eax, 12
+	mov dword [esi], eax
+	pop eax
+	
+	or dword [esi], 0x00000003
+	
+	inc eax
+	add esi, 4
+	
+	jmp .PTELoop
+	
+.PTELoopExit:
+
+	; Set up PDE.
+
+	; Return.
+	ret
 	
 ;------------------------------------------------------------------------------;	
 ; set_a20: sets a20 line with various methods.
