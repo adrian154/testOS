@@ -9,7 +9,7 @@
 #include "acpi.h"
 #include "hpet.h"
 #include "pit.h"
-//#include "paging.h"
+#include "paging.h"
 #include "serial.h"
 
 /* Test: Fired every keypress */
@@ -107,8 +107,13 @@ void cmain(unsigned int kernelPhysicalStart, unsigned int kernelPhysicalEnd) {
 	printDword(kernelPhysicalEnd);
 	putChar('\n');
 	
-	//setupPaging();
-	//printString("enabled paging.\n");
+	serialWrite("the fitness gram pacer test is a multistage aerobic capacity test.");
+	
+	//installPIT();
+	//printString("initialized PIT.\n");
+	
+	setupPaging();
+	printString("enabled paging.\n");
 	
 	/* Hang forever. */
 	for(;;);

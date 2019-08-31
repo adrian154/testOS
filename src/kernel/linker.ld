@@ -1,7 +1,7 @@
 OUTPUT_FORMAT("binary")
 ENTRY(start)
 
-. = 0xE0100000;
+. = 0x00100000;
 
 kernelPhysicalStart = .;
 
