@@ -107,13 +107,16 @@ void cmain(unsigned int kernelPhysicalStart, unsigned int kernelPhysicalEnd) {
 	printDword(kernelPhysicalEnd);
 	putChar('\n');
 	
-	serialWrite("the fitness gram pacer test is a multistage aerobic capacity test.");
-	
-	//installPIT();
-	//printString("initialized PIT.\n");
-	
 	setupPaging();
 	printString("enabled paging.\n");
+	
+	char *ptr = 0xDEADBEEF;
+	*ptr = 0;
+	
+	/* Well, I'm stuck. */
+	/* I would work on writing a page frame allocator so I can get to work on context switching, userspace, and eventually system calls. */
+	/* However, I have no ambition and the mounting school stress I'm experiencing is super unmotivating. */
+	/* I'm sorry for the probable lack of commits after this. I have nowhere to go. */
 	
 	/* Hang forever. */
 	for(;;);

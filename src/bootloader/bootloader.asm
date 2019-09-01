@@ -5,7 +5,7 @@
 BITS 16
 ORG 0x7E00
 
-SECTORS_TO_LOAD equ 27
+SECTORS_TO_LOAD equ 34
 
 ;------------------------------------------------------------------------------;
 ; start: entry point

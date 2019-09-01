@@ -11,7 +11,7 @@ void setupPaging() {
 		pageDirectory[i] = PDE_KERNEL | PDE_READWRITE;
 	}
 	
-	/* Identity page 1M of memory. */
+	/* Identity page 4M of memory. */
 	for(unsigned int i = 0; i < 1024; i++) {
 		pageTable[i] = (i * 0x1000) | PTE_KERNEL | PTE_READWRITE | PTE_PRESENT;
 	}
