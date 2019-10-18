@@ -14,6 +14,9 @@
 
 /* Test: Fired every keypress */
 void testHandler(struct InterruptFrame *frame) {
+	
+	/* (Temporary keypress handler) */
+	/* Just read scancode for now */
 	inb(0x60);
 }
 
@@ -22,12 +25,12 @@ void cmain(unsigned int kernelPhysicalStart, unsigned int kernelPhysicalEnd) {
 	/* Reset terminal so messages can be printed to screen. */           
 	resetTerminal();
 	
-	/* Finally! */
+	/* Print debug message. */
 	terminalForeground = BRIGHT_GREEN;
 	printString("testOS kernel started.\n");
 	terminalForeground = WHITE;
 	
-	/* Despite there already being a valid (and identical) GDT, just set one up in C for the sake of it. */
+	/* Set up new GDT in C. */
 	installGDT();
 	printString("installed new GDT.\n");
 	
@@ -35,11 +38,11 @@ void cmain(unsigned int kernelPhysicalStart, unsigned int kernelPhysicalEnd) {
 	installIDT();
 	printString("installed IDT.\n");
 	
-	/* Install handlers for interrupst 0-31 (CPU-generated exceptions. */
+	/* Install handlers for interrupst 0-31 (CPU-generated exceptions). */
 	installISRs();
 	printString("installed exception handler.\n");
 	
-	/* Set up serial. */
+	/* Set up serial ports. */
 	initSerial();
 	printString("initialized COM1.\n");
 	
@@ -50,11 +53,14 @@ void cmain(unsigned int kernelPhysicalStart, unsigned int kernelPhysicalEnd) {
 	/* Dump memory map. */
 	printString("parsing memory map...\n");
 	
+	/* Read memory map. */
 	unsigned short numMapEntries = *(unsigned short *)0x85FE;
 	printMemoryMap(numMapEntries, (struct MemoryMapEntry *)0x8400);
 
-	/* Enable interrupts. Add a test handler. */
+	/* Enable interrupts. */
 	asm("sti");
+	
+	/* Install test handler for keyboard IRQ. */
 	installIRQHandler(1, testHandler);
 	
 	/* Try to locate RSDP. If it cannot be found, print an error. */
@@ -72,6 +78,7 @@ void cmain(unsigned int kernelPhysicalStart, unsigned int kernelPhysicalEnd) {
 	printString("found RSDP at 0x"); printDword((unsigned int)RSDP);
 	putChar('\n');
 	
+	/* Print OEMID for the sake of it. */
 	printString("OEMID is \"");
 	for(unsigned int i = 0; i < 6; i++) {
 		putChar(RSDP->OEMID[i]);
@@ -101,12 +108,14 @@ void cmain(unsigned int kernelPhysicalStart, unsigned int kernelPhysicalEnd) {
 		hang();
 	}
 	
+	/* Print kernel space for debug purposes. */
 	printString("kernel occupies ");
 	printDword(kernelPhysicalStart);
 	printString(" to ");
 	printDword(kernelPhysicalEnd);
 	putChar('\n');
 	
+	/* Set up paging. */
 	setupPaging();
 	printString("enabled paging.\n");
 	
@@ -117,7 +126,7 @@ void cmain(unsigned int kernelPhysicalStart, unsigned int kernelPhysicalEnd) {
 	/* I would work on writing a page frame allocator so I can get to work on context switching, userspace, and eventually system calls. */
 	/* However, I have no ambition and the mounting school stress I'm experiencing is super unmotivating. */
 	/* I'm sorry for the probable lack of commits after this. I have nowhere to go. */
-	
 	/* Hang forever. */
+	
 	for(;;);
 } 
