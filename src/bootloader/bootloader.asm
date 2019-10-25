@@ -692,6 +692,7 @@ pm_boot:
 	
 .done:	
 	
+	jmp hang
 	
 	; Jump to rest of PM bootloader.
 	jmp 0x100000
