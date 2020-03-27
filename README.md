@@ -1,5 +1,5 @@
 # testOS 
 
-testOS is a tiny operating system.
+Not really an OS, more just messing around with low-level code.
 
 ![os picture](https://github.com/adrian154/testOS/blob/master/image.png)
