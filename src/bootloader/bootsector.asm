@@ -24,13 +24,13 @@ start:
 	mov ds, ax
 	mov es, ax
 	
-	; Stack will be at 0x0000:0x7BFF, right below our bootsector.
+	; Stack grow down from 0x0000:0x7BFF, right below our bootsector.
 	mov ss, ax
 	mov sp, 0x7BFF
 	
 	sti
 	
-	; Set video mode.
+	; Set video/text mode.
 	call textmode
 
    	; Show a success message.

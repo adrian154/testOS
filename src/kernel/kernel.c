@@ -9,7 +9,6 @@
 #include "acpi.h"
 #include "hpet.h"
 #include "pit.h"
-#include "paging.h"
 #include "serial.h"
 
 /* Test: Fired every keypress */
@@ -115,9 +114,6 @@ void cmain(unsigned int kernelPhysicalStart, unsigned int kernelPhysicalEnd) {
 	printDword(kernelPhysicalEnd);
 	putChar('\n');
 	
-	/* Set up paging. */
-	setupPaging();
-	printString("enabled paging.\n");
-	
+	/* Loop forever. */
 	for(;;);
 } 

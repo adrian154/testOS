@@ -2,6 +2,7 @@
 
 ; start environment: CS,ES,GS=0, known stack, registers unknown (DL=disk number)
 ; loaded from 0x7E00 by bootsector.
+
 BITS 16
 ORG 0x7E00
 
@@ -593,14 +594,16 @@ print_hex_digit:
 set_pm:
 	cli
 	
+	; load GDT
 	lgdt [gdt_pointer]
 	
 	mov eax, cr0
 	or eax, 0x1
 	mov cr0, eax
-	
+
 	jmp CODE_SEG:pm_boot
-	;jmp hang	
+
+	jmp hang
 	
 ;------------------------------------------------------------------------------;
 ; Some various GDT info.
@@ -691,9 +694,7 @@ pm_boot:
 	jmp .loop
 	
 .done:	
-	
-	jmp hang
-	
+
 	; Jump to rest of PM bootloader.
 	jmp 0x100000
 	
