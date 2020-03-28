@@ -42,7 +42,7 @@ bool initHPET() {
 	unsigned char numTimers = (capabilitiesLower & 0x00001F00) >> 8;
 	bool canDoLegacy = capabilitiesLower & 0x00008000;
 
-	printQword(generalCapabilities);
+	printString("HPET has 0x"); printByte(numTimers); printString(" timers.\n");
 
 	return true;
 

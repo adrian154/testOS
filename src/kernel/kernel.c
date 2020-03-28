@@ -10,6 +10,7 @@
 #include "hpet.h"
 #include "pit.h"
 #include "serial.h"
+#include "ps2.h"
 
 void cmain(unsigned int kernelPhysicalStart, unsigned int kernelPhysicalEnd) {     
 
@@ -50,6 +51,17 @@ void cmain(unsigned int kernelPhysicalStart, unsigned int kernelPhysicalEnd) {
 	/* Read memory map. */
 	unsigned short numMapEntries = *(unsigned short *)0x85FE;
 	printMemoryMap(numMapEntries, (struct MemoryMapEntry *)0x8400);
+
+	/* Enable keyboard. */
+	if(!initPS2Controller()) {
+		terminalForeground = BRIGHT_RED;
+		printString("fatal: could not enable PS2 controller.\n");
+		terminalForeground = WHITE;
+
+		printString("system halted. manually restart your computer.");
+		hang();
+	}
+	printString("initialized PS2 controller.\n");
 
 	/* Try to locate RSDP. If it cannot be found, print an error. */
 	findRSDP();

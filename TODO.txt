@@ -3,6 +3,7 @@ TODO:
     Big-
         * paging
             * kernel heap
+            * general memory management
         * multithreading
         * usermode
 
@@ -11,4 +12,5 @@ TODO:
 
     Small-
         * abstract timer (HPET/PIT)
+            * features include periodic/one-shot mode, busywait
         * PS/2 keyboard

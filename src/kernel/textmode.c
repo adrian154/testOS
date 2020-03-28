@@ -125,3 +125,27 @@ void printQword(uint64 qword) {
 	printDword(qword >> 32);
 	printDword(qword & 0xFFFFFFFF);
 }
+
+void printUint(unsigned int number) {
+	char buffer[10];
+	int length = 0;
+
+	while(number != 0 && length < 10) {
+		buffer[length] = (number % 10) + '0';
+		length++;
+		number /= 10;
+	}
+
+	for(int i = length - 1; i >= 0; i--) {
+		putChar(buffer[i]);
+	}
+}
+
+void printInt(int number) {
+	if(number < 0) {
+		putChar('-');
+		number = -number;
+	}
+
+	printUint((int)number);
+}
