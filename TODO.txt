@@ -1,0 +1,14 @@
+TODO:
+
+    Big-
+        * paging
+            * kernel heap
+        * multithreading
+        * usermode
+
+    Medium-
+        * Minimal disk driver
+
+    Small-
+        * abstract timer (HPET/PIT)
+        * PS/2 keyboard
