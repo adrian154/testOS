@@ -54,11 +54,11 @@ bool findRSDP() {
 
 bool checksum(struct SDTHeader *header) {
 	
-	unsigned char total = 0;
+	uint8 total = 0;
 	
 	/* Some dirty pointer arithmetic to sum up table. */
 	for(unsigned i = 0; i < header->length; i++) {
-		total += ((unsigned char *) header)[i];
+		total += ((uint8 *) header)[i];
 	}
 
 	return total;
@@ -67,8 +67,8 @@ bool checksum(struct SDTHeader *header) {
 
 bool initRSDT() {
 	
-	/* Dereference RSDT and verify checksum. */
-	unsigned char sum;
+	/* Verify checksum */
+	uint8 sum;
 	RSDT = (struct RSDT *)RSDP->RSDTAddress;
 	
 	if((sum = checksum(&RSDT->header)) != 0) {
@@ -82,6 +82,7 @@ bool initRSDT() {
 	}
 
 	return true;
+	
 }
 
 /* Find an ACPI table based on the signature. 2*/

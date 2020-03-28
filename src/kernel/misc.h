@@ -1,8 +1,6 @@
 #ifndef __MISC_H
 #define __MISC_H
 
-#define null 0
-
 extern void hang();
 extern unsigned int strlen(const char *string);
 extern void memset(void *destination, unsigned char value, unsigned int size);

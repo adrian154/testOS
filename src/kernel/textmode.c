@@ -2,6 +2,7 @@
 
 #include "textmode.h"
 #include "misc.h"
+#include "types.h"
 
 unsigned short *buffer;
 unsigned short terminalX, terminalY;
@@ -103,20 +104,24 @@ void printString(const char *string) {
 	
 }
 
-void printByte(unsigned char byte) {
-	unsigned char high = byte >> 4;
-	unsigned char low = byte & 0x0F;
+void printByte(uint8 byte) {
+	uint8 high = byte >> 4;
+	uint8 low = byte & 0x0F;
 	putChar(high > 9 ? high - 0xA + 'A' : high + '0');
 	putChar(low > 9 ? low - 0xA + 'A' : low + '0');
 }
 
-void printWord(unsigned short word) {
+void printWord(uint16 word) {
 	printByte(word >> 8);
 	printByte(word & 0xFF);
 }
 
-void printDword(unsigned int dword) {
+void printDword(uint32 dword) {
 	printWord(dword >> 16);
 	printWord(dword & 0xFFFF);
 }
 
+void printQword(uint64 qword) {
+	printDword(qword >> 32);
+	printDword(qword & 0xFFFFFFFF);
+}

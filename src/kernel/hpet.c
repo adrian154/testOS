@@ -5,16 +5,16 @@
 
 struct HPETDescriptor *hpetDescriptor;
 
-void writeRegister64(unsigned short regNumber, unsigned long value) {
+void writeRegister64(uint16 regNumber, uint64 value) {
 
-	unsigned long *addr = (unsigned long *)(hpetDescriptor->address.address + regNumber * 4);
+	uint64 *addr = (uint64 *)(hpetDescriptor->address.address + regNumber * 8);
 	*addr = value;
 
 }
 
-long readRegister64(unsigned short regNumber) {
+uint64 readRegister64(uint16 regNumber) {
 
-	unsigned long *addr = (unsigned long *)(hpetDescriptor->address.address  + regNumber * 4);
+	uint64 *addr = (uint64 *)(hpetDescriptor->address.address  + regNumber * 8);
 	return *addr;
 
 }
@@ -35,15 +35,14 @@ bool initHPET() {
 	hpetDescriptor = descriptor;
 	
 	/* Read general capabilities. */
-	unsigned long generalCapabilities = readRegister64(GENERAL_CAPABILITIES);
-	unsigned int capabilitiesLower = generalCapabilities & 0x00000000FFFFFFFF;
-	unsigned int capabilitiesUpper = generalCapabilities & 0xFFFFFFFF00000000;
+	uint64 generalCapabilities = readRegister64(GENERAL_CAPABILITIES);
+	uint32 capabilitiesLower = generalCapabilities & 0x00000000FFFFFFFF;
+	uint32 period = generalCapabilities & 0xFFFFFFFF00000000;
 
 	unsigned char numTimers = (capabilitiesLower & 0x00001F00) >> 8;
 	bool canDoLegacy = capabilitiesLower & 0x00008000;
 
-	printDword(capabilitiesLower); printDword(capabilitiesUpper);
-	printString("Timer period in femtoseconds is 0x"); printDword(capabilitiesUpper); printString(" and has 0x"); printByte(numTimers); printString(" timers.");
+	printQword(generalCapabilities);
 
 	return true;
 

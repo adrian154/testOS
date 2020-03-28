@@ -1,6 +1,8 @@
 #ifndef __GDT_H
 #define __GDT_H
 
+#include "types.h"
+
 #define GDT_CODE_DESCRIPTOR 0x08
 #define GDT_DATA_DESCRIPTOR 0x10
 
@@ -20,21 +22,21 @@
 #define GDT_IS_PM			0b01000000
 
 struct GDTEntry {
-	unsigned short limitLower;				/* Lower 16 bits of base.*/
-	unsigned short baseLower;				/* Lower 16 bits of base. */
-	unsigned char baseMiddle;				/* Middle 16 bits of base. */
-	unsigned char access;					/* Access control information. */
-	unsigned char limitAndFlags;			/* Upper 4 bits of limit (the limit itself is only 20 bits) and 4 bits of attributes. */
-	unsigned char baseUpper;				/* Upper 16 bits of the base address. */
+	uint16 limitLower;				/* Lower 16 bits of limit.*/
+	uint16 baseLower;				/* Lower 16 bits of base. */
+	uint8 baseMiddle;				/* Middle 16 bits of base. */
+	uint8 access;					/* Access control information. */
+	uint8 limitAndFlags;			/* Upper 4 bits of limit (the limit itself is only 20 bits since GDT has 4K granularity) and 4 bits of attributes. */
+	uint8 baseUpper;				/* Upper 16 bits of the base address. */
 }__attribute__((packed));
 
 struct GDTPointer {
-	unsigned short limit;					/* Number of GDT entries.*/
-	unsigned int base;						/* Base address of the GDT. */
+	uint16 limit;					/* Number of GDT entries.*/
+	uint32 base;					/* Base address of the GDT. */
 }__attribute__((packed));								
 
 extern void loadGDT();
 extern void installGDT();
-extern void installGDTGate(unsigned char index, unsigned long base, unsigned int limit, unsigned char access, unsigned char flags);
+extern void installGDTGate(uint8 index, uint64 base, uint32 limit, uint8 access, uint8 flags);
 
 #endif

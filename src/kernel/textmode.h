@@ -18,6 +18,8 @@
 #define BRIGHT_YELLOW 14
 #define WHITE 15
 
+#include "types.h"
+
 extern unsigned short terminalX, terminalY;
 extern unsigned char terminalForeground, terminalBackground;
 extern void resetTerminal();
@@ -25,9 +27,10 @@ extern void clearScreen();
 extern void putChar(char character);
 extern void printString(const char *string);
 extern unsigned int strlen(const char *string);
-extern void printByte(unsigned char byte);
-extern void printWord(unsigned short word);
-extern void printDword(unsigned int dword);
+extern void printByte(uint8 byte);
+extern void printWord(uint16 word);
+extern void printDword(uint32 dword);
+extern void printQword(uint64 qword);
 extern void moveCursor(unsigned int x, unsigned int y);
 
 #endif

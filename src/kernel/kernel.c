@@ -11,15 +11,6 @@
 #include "pit.h"
 #include "serial.h"
 
-/* Test: Fired every keypress */
-void testHandler(struct InterruptFrame *frame) {
-	
-	/* (Temporary keypress handler) */
-	/* Just read scancode for now */
-	inb(0x60);
-
-}
-
 void cmain(unsigned int kernelPhysicalStart, unsigned int kernelPhysicalEnd) {     
 
 	/* Reset terminal so messages can be printed to screen. */           
@@ -59,9 +50,6 @@ void cmain(unsigned int kernelPhysicalStart, unsigned int kernelPhysicalEnd) {
 
 	/* Enable interrupts. */
 	asm("sti");
-	
-	/* Install test handler for keyboard IRQ. */
-	installIRQHandler(1, testHandler);
 	
 	/* Try to locate RSDP. If it cannot be found, print an error. */
 	findRSDP();
@@ -115,7 +103,7 @@ void cmain(unsigned int kernelPhysicalStart, unsigned int kernelPhysicalEnd) {
 	printString(" to ");
 	printDword(kernelPhysicalEnd);
 	putChar('\n');
-	
+
 	/* Loop forever. */
 	for(;;);
 } 

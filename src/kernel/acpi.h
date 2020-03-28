@@ -2,6 +2,7 @@
 #define __ACPI_H
 
 #include "bool.h"
+#include "types.h"
 
 /* For use with GAS */
 #define ADDR_SPACE_MEMORY	0
@@ -9,44 +10,36 @@
 
 struct RSDPDescriptor {
 	char signature[8];
-	unsigned char checksum;
+	uint8 checksum;
 	char OEMID[6];
-	unsigned char revision;
-	unsigned int RSDTAddress;
-}__attribute__((packed));
-
-struct RSDPDescriptor2 {
-	struct RSDPDescriptor oldDescriptor;
-	unsigned int length;
-	unsigned long XSDTAddress;
-	unsigned char extendedChecksum;
-	unsigned char reserved[3];
+	uint8 revision;
+	uint32 RSDTAddress;
 }__attribute__((packed));
 
 struct SDTHeader {
 	char signature[4];
-	unsigned int length;
-	unsigned char revision;
-	unsigned char checksum;
+	uint32 length;
+	uint8 revision;
+	uint8 checksum;
 	char OEMID[6];
 	char OEMTableID[8];
-	unsigned int OEMRevision;
-	unsigned int creatorID;
-	unsigned int creatorRevision;
+	uint32 OEMRevision;
+	uint32 creatorID;
+	uint32 creatorRevision;
 }__attribute__((packed));
 
 struct RSDT {
 	struct SDTHeader header;
-	unsigned int otherTables;
+	uint32 otherTables;
 }__attribute__((packed));
 
 /* "GAS" (Generic Address Structure) */
 struct ACPIAddress {
-	unsigned char addressSpace;
-	unsigned char registerWidth;
-	unsigned char registerOffset;
-	unsigned char reserved;
-	unsigned long address;
+	uint8 addressSpace;
+	uint8 registerWidth;
+	uint8 registerOffset;
+	uint8 reserved;
+	uint64 address;
 };
 
 struct RSDPDescriptor *RSDP;

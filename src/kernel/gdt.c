@@ -7,7 +7,7 @@ struct GDTEntry gdt[3];
 struct GDTPointer GDTPointer;
 
 /* Install a GDT gate in our GDT. */
-void installGDTGate(unsigned char index, unsigned long base, unsigned int limit, unsigned char access, unsigned char flags) {
+void installGDTGate(uint8 index, uint64 base, uint32 limit, uint8 access, uint8 flags) {
 	
 	/* Set up the base first. */
 	gdt[index].baseLower = base & 0xFFFF;
@@ -34,7 +34,7 @@ void installGDT() {
 	/* Null descriptor. */
 	installGDTGate(0, 0, 0, 0, 0);
 	
-	/* Code descriptor. */
+	/* Kernel code, data descriptor. */
 	installGDTGate(1, 0, 0xFFFFFFFF, GDT_PRESENT | GDT_RING0 | GDT_IS_CODE_OR_DATA | GDT_EXECUTABLE | GDT_READABLE, GDT_IS_4K | GDT_IS_PM);
 	installGDTGate(2, 0, 0xFFFFFFFF, GDT_PRESENT | GDT_RING0 | GDT_IS_CODE_OR_DATA | GDT_WRITABLE, GDT_IS_4K | GDT_IS_PM);
 
