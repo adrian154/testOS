@@ -1,3 +1,6 @@
+#ifndef __SERIAL_H
+#define __SERIAL_H
+
 #define COM1 0x3F8
 
 #define DATA_REGISTER 				0x3F8
@@ -33,3 +36,5 @@
 extern void initSerial();
 extern void serialWriteChar(char ch);
 extern void serialWrite(const char *str);
+
+#endif

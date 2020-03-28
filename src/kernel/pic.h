@@ -1,3 +1,6 @@
+#ifndef __PIC_H
+#define __PIC_H
+
 /* PIC command and data ports. */
 #define PIC1_COMMAND	0x20
 #define PIC1_DATA		0x21
@@ -9,3 +12,5 @@
 
 extern void remapPIC(unsigned char offset1, unsigned char offset2);
 extern void sendEOI(unsigned char irq);
+
+#endif

@@ -1,3 +1,6 @@
+#ifndef __TEXTMODE_H
+#define __TEXTMODE_H
+
 #define BLACK 0
 #define BLUE 1
 #define GREEN 2
@@ -26,3 +29,5 @@ extern void printByte(unsigned char byte);
 extern void printWord(unsigned short word);
 extern void printDword(unsigned int dword);
 extern void moveCursor(unsigned int x, unsigned int y);
+
+#endif

@@ -1,3 +1,6 @@
+#ifndef __MEMORYMAP_H
+#define __MEMORYMAP_H
+
 struct MemoryMapEntry {
 	unsigned int baseLower;
 	unsigned int baseUpper;
@@ -8,3 +11,5 @@ struct MemoryMapEntry {
 }__attribute__((packed));
 
 extern void printMemoryMap(unsigned short numEntries, struct MemoryMapEntry *map);
+
+#endif

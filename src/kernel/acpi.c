@@ -72,37 +72,47 @@ bool initRSDT() {
 	RSDT = (struct RSDT *)RSDP->RSDTAddress;
 	
 	if((sum = checksum(&RSDT->header)) != 0) {
+
 		terminalForeground = BRIGHT_RED;
-		
 		printString("initRSDT(): RSDT checksum does not equal zero, got 0x");
-		printByte(sum);
+		printByte(sum); putChar('\n');
 		
 		return false;
+
 	}
 
 	return true;
 }
 
+/* Find an ACPI table based on the signature. 2*/
 struct SDTHeader *findTable(char signature[4]) {
+
+	/* Find number of entries in RSDT */
 	unsigned int numEntries = (RSDT->header.length - sizeof(RSDT->header)) / 4;
+	
+	/* Address of first header in RSDT */
 	unsigned int *firstAddress = (unsigned int *)&(RSDT->otherTables);
 	
+	/* Loop through entries, look for matching signature */
 	for(unsigned int i = 0; i < numEntries; i++) {
 		struct SDTHeader *header = (struct SDTHeader *)*firstAddress;
 		
-		bool found = true;
+		bool match = true;
+
 		for(unsigned int i = 0; i < 4; i++) {
 			if(header->signature[i] != signature[i]) {
-				found = false;	
+				match = false;	
 			}
 		}
 		
-		if(found) {
+		if(match) {
 			return header;	
 		}
 		
 		firstAddress++;
 	}
 	
+	/* There was no match, return null. */
 	return 0;
+
 }

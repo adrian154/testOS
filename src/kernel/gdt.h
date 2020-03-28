@@ -1,3 +1,6 @@
+#ifndef __GDT_H
+#define __GDT_H
+
 #define GDT_CODE_DESCRIPTOR 0x08
 #define GDT_DATA_DESCRIPTOR 0x10
 
@@ -34,4 +37,4 @@ extern void loadGDT();
 extern void installGDT();
 extern void installGDTGate(unsigned char index, unsigned long base, unsigned int limit, unsigned char access, unsigned char flags);
 
-
+#endif

@@ -17,6 +17,7 @@ void testHandler(struct InterruptFrame *frame) {
 	/* (Temporary keypress handler) */
 	/* Just read scancode for now */
 	inb(0x60);
+	
 }
 
 void cmain(unsigned int kernelPhysicalStart, unsigned int kernelPhysicalEnd) {     

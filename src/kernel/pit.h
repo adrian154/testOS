@@ -1,3 +1,6 @@
+#ifndef __PIT_H
+#define __PIT_H
+
 #define PIT_CHANNEL0 		0b00000000
 #define PIT_CHANNEL1 		0b01000000
 #define PIT_CHANNEL2 		0b10000000
@@ -22,3 +25,5 @@
 
 extern volatile int tick;
 extern void installPIT();
+
+#endif
