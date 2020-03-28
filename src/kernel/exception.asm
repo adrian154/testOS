@@ -219,6 +219,8 @@ extern faultHandler
 
 isrWrapper:
 		; CS, EIP, EFLAGS, SS, and ESP are currently on stack
+
+		; PUSHA pushes EAX, ECX, EDX, EBX, ESP (pre-push), EBP, ESI, EDI
 		pusha
 		
 		push ds
@@ -250,7 +252,7 @@ isrWrapper:
 		pop es
 		pop ds
 		
-		; Return from interrupt
+		; Pops EDI, ESI, EBP, ESP, EBX, EDX, ECX, EAX
 		popa
 		
 		; Clean up pushed error code and ISR numbers

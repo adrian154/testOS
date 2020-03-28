@@ -6,10 +6,10 @@ struct IDTEntry idt[256];
 struct IDTPointer IDTPointer;
 
 /* Install an IDT gate in our IDT. */
-void installIDTGate(unsigned char interrupt, unsigned long base, unsigned short selector, unsigned char attributes) {
+void installIDTGate(uint8 interrupt, uint32 base, uint16 selector, uint8 attributes) {
 	idt[interrupt].alwaysZero = 0;
 	idt[interrupt].offsetLower = base & 0xFFFF;
-	idt[interrupt].offsetUpper = base >> 16;;
+	idt[interrupt].offsetUpper = base >> 16;
 	idt[interrupt].attributes = attributes;
 	idt[interrupt].selector = selector;
 }

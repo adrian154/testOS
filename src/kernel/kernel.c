@@ -41,6 +41,9 @@ void cmain(unsigned int kernelPhysicalStart, unsigned int kernelPhysicalEnd) {
 	installIRQs();
 	printString("installed IRQ handler.\n");
 	
+	/* Enable interrupts. */
+	asm("sti");
+
 	/* Dump memory map. */
 	printString("parsing memory map...\n");
 	
@@ -48,9 +51,6 @@ void cmain(unsigned int kernelPhysicalStart, unsigned int kernelPhysicalEnd) {
 	unsigned short numMapEntries = *(unsigned short *)0x85FE;
 	printMemoryMap(numMapEntries, (struct MemoryMapEntry *)0x8400);
 
-	/* Enable interrupts. */
-	asm("sti");
-	
 	/* Try to locate RSDP. If it cannot be found, print an error. */
 	findRSDP();
 	if(RSDP == 0) {
@@ -106,4 +106,5 @@ void cmain(unsigned int kernelPhysicalStart, unsigned int kernelPhysicalEnd) {
 
 	/* Loop forever. */
 	for(;;);
-} 
+
+}

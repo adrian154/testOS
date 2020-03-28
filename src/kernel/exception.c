@@ -125,31 +125,31 @@ void faultHandler(struct ExceptionFrame *frame) {
 		
 		terminalForeground = WHITE;
 
-		printString("EAX=0x"); printDword(frame->eax);
-		printString(" EBX=0x"); printDword(frame->ebx);
-		printString(" ECX=0x"); printDword(frame->ecx);
-		printString(" EDX=0x"); printDword(frame->edx);
+		printString("EAX=0x"); printDword(frame->EAX);
+		printString(" EBX=0x"); printDword(frame->EBX);
+		printString(" ECX=0x"); printDword(frame->ECX);
+		printString(" EDX=0x"); printDword(frame->EDX);
 		putChar('\n');
 		
-		printString("ESI=0x"); printDword(frame->esi);
-		printString(" EDI=0x"); printDword(frame->edi);
-		printString(" ESP=0x"); printDword(frame->userEsp);
-		printString("  SS=0x"); printDword(frame->userSs);
+		printString("ESI=0x"); printDword(frame->ESI);
+		printString(" EDI=0x"); printDword(frame->EDI);
+		printString(" ESP=0x"); printDword(frame->userESP);
+		printString("  SS=0x"); printDword(frame->userSS);
 		putChar('\n');
 		
-		printString(" DS=0x"); printDword(frame->ds);
-		printString("  ES=0x"); printDword(frame->es);
-		printString("  FS=0x"); printDword(frame->fs);
-		printString("  GS=0x"); printDword(frame->gs);
+		printString(" DS=0x"); printDword(frame->DS);
+		printString("  ES=0x"); printDword(frame->ES);
+		printString("  FS=0x"); printDword(frame->FS);
+		printString("  GS=0x"); printDword(frame->GS);
 		putChar('\n');
 		
-		printString(" CS=0x"); printDword(frame->cs);
-		printString(" EIP=0x"); printDword(frame->eip);
-		printString(" EFLAGS=0x"); printDword(frame->eflags);
+		printString(" CS=0x"); printDword(frame->CS);
+		printString(" EIP=0x"); printDword(frame->EIP);
+		printString(" EFLAGS=0x"); printDword(frame->EFLAGS);
 		putChar('\n');
 		
-		printString("(kernel) ESP=0x"); printDword(frame->kernelEsp); 
-		printString(" EBP=0x"); printDword(frame->kernelEbp);
+		printString("(kernel) ESP=0x"); printDword(frame->kernelESP); 
+		printString(" EBP=0x"); printDword(frame->kernelEBP);
 		putChar('\n');
 		
 		putChar('\n');

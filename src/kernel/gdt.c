@@ -7,7 +7,7 @@ struct GDTEntry gdt[3];
 struct GDTPointer GDTPointer;
 
 /* Install a GDT gate in our GDT. */
-void installGDTGate(uint8 index, uint64 base, uint32 limit, uint8 access, uint8 flags) {
+void installGDTGate(uint8 index, uint32 base, uint32 limit, uint8 access, uint8 flags) {
 	
 	/* Set up the base first. */
 	gdt[index].baseLower = base & 0xFFFF;

@@ -37,6 +37,6 @@ struct GDTPointer {
 
 extern void loadGDT();
 extern void installGDT();
-extern void installGDTGate(uint8 index, uint64 base, uint32 limit, uint8 access, uint8 flags);
+extern void installGDTGate(uint8 index, uint32 base, uint32 limit, uint8 access, uint8 flags);
 
 #endif
