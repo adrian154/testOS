@@ -47,7 +47,7 @@ struct ACPIAddress {
 	unsigned char registerOffset;
 	unsigned char reserved;
 	unsigned long address;
-}
+};
 
 struct RSDPDescriptor *RSDP;
 struct RSDPDescriptor2 *RSDP2;

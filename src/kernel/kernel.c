@@ -17,7 +17,7 @@ void testHandler(struct InterruptFrame *frame) {
 	/* (Temporary keypress handler) */
 	/* Just read scancode for now */
 	inb(0x60);
-	
+
 }
 
 void cmain(unsigned int kernelPhysicalStart, unsigned int kernelPhysicalEnd) {     
@@ -107,7 +107,8 @@ void cmain(unsigned int kernelPhysicalStart, unsigned int kernelPhysicalEnd) {
 		printString("fatal: could not initialize HPET");
 		hang();
 	}
-	
+	printString("initialized HPET\n");
+
 	/* Print kernel space for debug purposes. */
 	printString("kernel occupies ");
 	printDword(kernelPhysicalStart);

@@ -4,6 +4,8 @@
 #include "acpi.h"
 #include "bool.h"
 
+#define GENERAL_CAPABILITIES    0x000
+
 struct HPETDescriptor {
     struct SDTHeader header;
     unsigned char hardwareRevisionID;
