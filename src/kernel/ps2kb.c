@@ -3,6 +3,7 @@
 #include "idt.h"
 #include "ps2.h"
 #include "misc.h"
+#include "textmode.h"
 
 /* Keyboard driver runs on simple finite state machine model */
 
@@ -114,15 +115,17 @@ uint8 singleScancodePress[170] = {
 void handleKeyboardIRQ(struct InterruptFrame *frame) {
 
     uint8 scancode = inb(PS2_DATA_PORT);
+    enum key keyPressed = KEY_NONE;
+    enum key keyReleased = KEY_NONE;
 
     if(state == STATE_DONE) {
 
         /* Search for single-scancode presses. */
-        /* All key releases */
+        /* All key releases are at least 2 bytes. */
         for(int i = 0; i < 85; i++) {
             uint8 scKey = singleScancodePress[i * 2];
             if(scKey == scancode) {
-                
+                keyPressed = singleScancodePress[i * 2 + 1];
             }
         }
 
@@ -142,11 +145,20 @@ void handleKeyboardIRQ(struct InterruptFrame *frame) {
 
     }
 
+    printString("key pressed: 0x"); printByte(keyPressed);
+
 }
 
 void initKeyboard() {
 
     state = STATE_DONE;
+
+    /* Set scancode set 2 */
+    //ps2_waitWrite();
+    outb(PS2_COMMAND_REGISTER, PS2_KB_SET_SCANCODE_SET);
+    //ps2_waitWrite();
+    outb(PS2_COMMAND_REGISTER, PS2_KB_SCANCODE_SET_2);
+
     installIRQHandler(IRQ_PS2_KEYBOARD, handleKeyboardIRQ);
 
 }

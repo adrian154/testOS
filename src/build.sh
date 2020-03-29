@@ -30,10 +30,10 @@ i686-elf-gcc -c ./kernel/hpet.c -o ../build/hpet.o $CFLAGS
 i686-elf-gcc -c ./kernel/pit.c -o ../build/pit.o $CFLAGS
 i686-elf-gcc -c ./kernel/serial.c -o ../build/serial.o $CFLAGS
 i686-elf-gcc -c ./kernel/ps2.c -o ../build/ps2.o $CFLAGS
-i686-elf-gcc -c ./kernel/ps2keyboard.c -o ../build/ps2keyboard.o $CFLAGS
+i686-elf-gcc -c ./kernel/ps2kb.c -o ../build/ps2kb.o $CFLAGS
 
 # Link kernel binary.
-i686-elf-gcc -T ./kernel/linker.ld -o ../build/kernel.bin -ffreestanding -O0 -nostdlib ../build/pmbootloader.o ../build/kernel.o ../build/misc.o ../build/misc_asm.o ../build/textmode.o ../build/idt.o ../build/idt_asm.o ../build/exception.o ../build/exception_asm.o ../build/gdt_asm.o ../build/gdt.o ../build/memorymap.o ../build/irq_asm.o ../build/irq.o ../build/pic.o ../build/acpi.o ../build/hpet.o ../build/serial.o ../build/ps2.o ../build/ps2keyboard.o
+i686-elf-gcc -T ./kernel/linker.ld -o ../build/kernel.bin -ffreestanding -O0 -nostdlib ../build/pmbootloader.o ../build/kernel.o ../build/misc.o ../build/misc_asm.o ../build/textmode.o ../build/idt.o ../build/idt_asm.o ../build/exception.o ../build/exception_asm.o ../build/gdt_asm.o ../build/gdt.o ../build/memorymap.o ../build/irq_asm.o ../build/irq.o ../build/pic.o ../build/acpi.o ../build/hpet.o ../build/serial.o ../build/ps2.o ../build/ps2kb.o
 
 # Write bootsector, bootloader, and kernel binary
 dd if=../build/bootsector.bin of=../img/disk.img

@@ -42,5 +42,7 @@
 #define PS2_KB_SCANCODE_SET_3      3
 
 extern bool initPS2Controller();
+extern void ps2_waitWrite();
+extern void ps2_waitRead();
 
 #endif 

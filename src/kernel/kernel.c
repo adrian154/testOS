@@ -11,10 +11,7 @@
 #include "pit.h"
 #include "serial.h"
 #include "ps2.h"
-
-void handleKeypress(struct InterruptFrame *frame) {
-	printString("0x"); printByte(inb(0x60)); putChar(' ');
-}
+#include "ps2kb.h"
 
 void cmain(unsigned int kernelPhysicalStart, unsigned int kernelPhysicalEnd) {     
 
@@ -120,7 +117,7 @@ void cmain(unsigned int kernelPhysicalStart, unsigned int kernelPhysicalEnd) {
 	printDword(kernelPhysicalEnd);
 	putChar('\n');
 
-	installIRQHandler(1, handleKeypress);
+	initKeyboard();
 
 	/* Loop forever. */
 	for(;;);

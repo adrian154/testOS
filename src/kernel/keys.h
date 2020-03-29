@@ -97,7 +97,8 @@
 #define KEY_SPACE           0x59
 */
 
-enum Key {
+enum key {
+    KEY_NONE,
 	KEY_ESC,
 	KEY_F1,
 	KEY_F2,
