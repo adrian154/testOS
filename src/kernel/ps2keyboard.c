@@ -2,6 +2,7 @@
 #include "irq.h"
 #include "idt.h"
 #include "ps2.h"
+#include "misc.h"
 
 /* Keyboard driver runs on simple finite state machine model */
 
@@ -18,6 +19,11 @@
 /* Key states. */
 bool keyStates[256];
 int state;
+
+/* Scancode set 2 */
+char sm1[] = {
+    0xFF, 0xFF
+};
 
 void handleKeyboardIRQ(struct InterruptFrame *frame) {
 

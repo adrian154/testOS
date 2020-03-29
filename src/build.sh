@@ -1,10 +1,9 @@
-# Assemble bootsector and write to first sector of disk.
-nasm -f bin ./bootloader/bootsector.asm -o ../build/bootsector.bin
-dd if=../build/bootsector.bin of=../img/disk.img
+# Clean builds, images
+./clean.sh
 
-# Assemble and write bootloader.
+# Assemble bootsector, bootloader
+nasm -f bin ./bootloader/bootsector.asm -o ../build/bootsector.bin
 nasm -f bin ./bootloader/bootloader.asm -o ../build/bootloader.bin
-dd if=../build/bootloader.bin of=../img/disk.img seek=1 bs=512
 
 # Assemble protected mode stuff.
 nasm -f elf ./kernel/pmbootloader.asm -o ../build/pmbootloader.o
@@ -31,11 +30,14 @@ i686-elf-gcc -c ./kernel/hpet.c -o ../build/hpet.o $CFLAGS
 i686-elf-gcc -c ./kernel/pit.c -o ../build/pit.o $CFLAGS
 i686-elf-gcc -c ./kernel/serial.c -o ../build/serial.o $CFLAGS
 i686-elf-gcc -c ./kernel/ps2.c -o ../build/ps2.o $CFLAGS
+i686-elf-gcc -c ./kernel/ps2keyboard.c -o ../build/ps2keyboard.o $CFLAGS
 
 # Link kernel binary.
-i686-elf-gcc -T ./kernel/linker.ld -o ../build/kernel.bin -ffreestanding -O0 -nostdlib ../build/pmbootloader.o ../build/kernel.o ../build/misc.o ../build/misc_asm.o ../build/textmode.o ../build/idt.o ../build/idt_asm.o ../build/exception.o ../build/exception_asm.o ../build/gdt_asm.o ../build/gdt.o ../build/memorymap.o ../build/irq_asm.o ../build/irq.o ../build/pic.o ../build/acpi.o ../build/hpet.o ../build/serial.o ../build/ps2.o
+i686-elf-gcc -T ./kernel/linker.ld -o ../build/kernel.bin -ffreestanding -O0 -nostdlib ../build/pmbootloader.o ../build/kernel.o ../build/misc.o ../build/misc_asm.o ../build/textmode.o ../build/idt.o ../build/idt_asm.o ../build/exception.o ../build/exception_asm.o ../build/gdt_asm.o ../build/gdt.o ../build/memorymap.o ../build/irq_asm.o ../build/irq.o ../build/pic.o ../build/acpi.o ../build/hpet.o ../build/serial.o ../build/ps2.o ../build/ps2keyboard.o
 
-# Write kernel binary.
+# Write bootsector, bootloader, and kernel binary
+dd if=../build/bootsector.bin of=../img/disk.img
+dd if=../build/bootloader.bin of=../img/disk.img seek=1 bs=512
 dd if=../build/kernel.bin of=../img/disk.img seek=5 bs=512
 
 # Make a copy of the disk so it can be viewed while QEMU is running.
