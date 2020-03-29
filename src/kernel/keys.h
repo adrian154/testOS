@@ -5,6 +5,7 @@
 #include "ps2.h"
 #include "types.h"
 
+/*
 #define KEY_ESC             0x01
 #define KEY_F1              0x02
 #define KEY_F2              0x03
@@ -19,7 +20,7 @@
 #define KEY_F11             0x0C
 #define KEY_F12             0x0D
 #define KEY_PRINTSCREEN     0x0E
-#define KEY_SCROLLOCK      0x0F
+#define KEY_SCROLLOCK       0x0F
 #define KEY_PAUSEBREAK      0x10
 #define KEY_BACKTICK        0x11
 #define KEY_0               0x12
@@ -93,7 +94,114 @@
 #define KEY_LEFT            0x56
 #define KEY_RIGHT           0x57
 #define KEY_INSERT          0x58
-#define KEY_SPACe           0x59
+#define KEY_SPACE           0x59
+*/
+
+enum Key {
+	KEY_ESC,
+	KEY_F1,
+	KEY_F2,
+	KEY_F3,
+	KEY_F4,
+	KEY_F5,
+	KEY_F6,
+	KEY_F7,
+	KEY_F8,
+	KEY_F9,
+	KEY_F10,
+	KEY_F11,
+	KEY_F12,
+	KEY_0,
+	KEY_1,
+	KEY_2,
+	KEY_3,
+	KEY_4,
+	KEY_5,
+	KEY_6,
+	KEY_7,
+	KEY_8,
+	KEY_9,
+	KEY_A,
+	KEY_B,
+	KEY_C,
+	KEY_D,
+	KEY_E,
+	KEY_F,
+	KEY_G,
+	KEY_H,
+	KEY_I,
+	KEY_J,
+	KEY_K,
+	KEY_L,
+	KEY_M,
+	KEY_N,
+	KEY_O,
+	KEY_P,
+	KEY_Q,
+	KEY_R,
+	KEY_S,
+	KEY_T,
+	KEY_U,
+	KEY_V,
+	KEY_W,
+	KEY_X,
+	KEY_Y,
+	KEY_Z,
+	KEY_BACKTICK,
+	KEY_TAB,
+	KEY_CAPSLOCK,
+	KEY_DASH,
+	KEY_EQUALS,
+	KEY_LBRACKET,
+	KEY_RBRACKET,
+	KEY_BACKSLASH,
+	KEY_SEMICOLON,
+	KEY_QUOTE,
+	KEY_COMMA,
+	KEY_PERIOD,
+	KEY_SLASH,
+	KEY_LCTRL,
+	KEY_RCTRL,
+	KEY_LALT,
+	KEY_RALT,
+	KEY_LSHIFT,
+	KEY_RSHIFT,
+	KEY_LWIN,
+	KEY_RWIN,
+	KEY_DELETE,
+	KEY_BACKSPACE,
+	KEY_MENUS,
+	KEY_UP,
+	KEY_DOWN,
+	KEY_LEFT,
+	KEY_RIGHT,
+	KEY_PRINTSCREEN,
+	KEY_SCROLLOCK,
+	KEY_PAUSE,
+	KEY_INSERT,
+	KEY_PAGEUP,
+	KEY_PAGEDOWN,
+	KEY_END,
+	KEY_KP_NUMLOCK,
+	KEY_KP_SLASH,
+	KEY_KP_STAR,
+	KEY_KP_DASH,
+	KEY_KP_PLUS,
+	KEY_KP_ENTER,
+	KEY_KP_PERIOD,
+	KEY_KP_0,
+	KEY_KP_1,
+	KEY_KP_2,
+	KEY_KP_3,
+	KEY_KP_4,
+	KEY_KP_5,
+	KEY_KP_6,
+	KEY_KP_7,
+	KEY_KP_8,
+	KEY_KP_9,
+    KEY_ENTER,
+    KEY_SPACE
+};
 
 extern void initKeyboard();
 

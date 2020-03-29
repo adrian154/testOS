@@ -1,4 +1,4 @@
-#include "keyboard.h"
+#include "keys.h"
 #include "irq.h"
 #include "idt.h"
 #include "ps2.h"
@@ -18,10 +18,12 @@
 
 /* Key states. */
 bool keyStates[256];
+
+/* State of the IRQ handler */
 int state;
 
 /* Single byte press events */
-char singleEventPress[] = {
+uint8 singleScancodePress[170] = {
     0x76, KEY_ESC,
     0x05, KEY_F1,
     0x06, KEY_F2,
@@ -47,7 +49,7 @@ char singleEventPress[] = {
     0x3E, KEY_8,
     0x46, KEY_9,
     0x45, KEY_0,
-    0x4E, KEY_MINUS,
+    0x4E, KEY_DASH,
     0x55, KEY_EQUALS,
     0x66, KEY_BACKSPACE,
     0x0D, KEY_TAB,
@@ -61,8 +63,8 @@ char singleEventPress[] = {
     0x43, KEY_I,
     0x44, KEY_O,
     0x4D, KEY_P,
-    0x54, KEY_LEFTBRACKET,
-    0x5B, KEY_RIGHTBRACKET,
+    0x54, KEY_LBRACKET,
+    0x5B, KEY_RBRACKET,
     0x5D, KEY_BACKSLASH,
     0x58, KEY_CAPSLOCK,
     0x1C, KEY_A,
@@ -84,7 +86,7 @@ char singleEventPress[] = {
     0x2A, KEY_V,
     0x32, KEY_B,
     0x31, KEY_N,
-    0x3A, KEY_M
+    0x3A, KEY_M,
     0x41, KEY_COMMA,
     0x49, KEY_PERIOD,
     0x4A, KEY_SLASH,
@@ -92,21 +94,21 @@ char singleEventPress[] = {
     0x14, KEY_LCTRL,
     0x11, KEY_LALT,
     0x29, KEY_SPACE,
-    0x77, KEY_NUMLOCK,
-    0x7C, KEY_NUMPAD_STAR,
-    0x7B, KEY_MINUS,
-    0x6C, KEY_7,
-    0x75, KEY_8,
-    0x7D, KEY_9,
-    0x79, KEY_NUMPAD_PLUS,
-    0x6B, KEY_4,
-    0x73, KEY_5,
-    0x74, KEY_6,
-    0x69, KEY_1,
-    0x72, KEY_2,
-    0x7A, KEY_3,
-    0x70, KEY_0,
-    0x71, KEY_PERIOD
+    0x77, KEY_KP_NUMLOCK,
+    0x7C, KEY_KP_STAR,
+    0x7B, KEY_KP_DASH,
+    0x6C, KEY_KP_7,
+    0x75, KEY_KP_8,
+    0x7D, KEY_KP_9,
+    0x79, KEY_KP_PLUS,
+    0x6B, KEY_KP_4,
+    0x73, KEY_KP_5,
+    0x74, KEY_KP_6,
+    0x69, KEY_KP_1,
+    0x72, KEY_KP_2,
+    0x7A, KEY_KP_3,
+    0x70, KEY_KP_0,
+    0x71, KEY_KP_PERIOD
 };
 
 void handleKeyboardIRQ(struct InterruptFrame *frame) {
@@ -114,6 +116,15 @@ void handleKeyboardIRQ(struct InterruptFrame *frame) {
     uint8 scancode = inb(PS2_DATA_PORT);
 
     if(state == STATE_DONE) {
+
+        /* Search for single-scancode presses. */
+        /* All key releases */
+        for(int i = 0; i < 85; i++) {
+            uint8 scKey = singleScancodePress[i * 2];
+            if(scKey == scancode) {
+                
+            }
+        }
 
         if(scancode == 0xE0)
             state = STATE_AFTER_E0;
