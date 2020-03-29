@@ -18,11 +18,7 @@ bool initPS2Controller() {
     outb(PS2_COMMAND_REGISTER, PS2_DISABLE_PORT1);
     ps2_waitWrite();
     outb(PS2_COMMAND_REGISTER, PS2_DISABLE_PORT2);
-
-    /* Flush output buffer */
-    ps2_waitRead();
-    inb(PS2_DATA_PORT);
-
+    
     /* Perform self test */
     ps2_waitWrite();
     outb(PS2_COMMAND_REGISTER, PS2_SELF_TEST);

@@ -12,6 +12,10 @@
 #include "serial.h"
 #include "ps2.h"
 
+void handleKeypress(struct InterruptFrame *frame) {
+	printString("0x"); printByte(inb(0x60)); putChar(' ');
+}
+
 void cmain(unsigned int kernelPhysicalStart, unsigned int kernelPhysicalEnd) {     
 
 	/* Reset terminal so messages can be printed to screen. */           
@@ -110,11 +114,13 @@ void cmain(unsigned int kernelPhysicalStart, unsigned int kernelPhysicalEnd) {
 	printString("initialized HPET\n");
 
 	/* Print kernel space for debug purposes. */
-	printString("kernel occupies ");
+	printString("kernel occupies 0x");
 	printDword(kernelPhysicalStart);
-	printString(" to ");
+	printString(" to 0x");
 	printDword(kernelPhysicalEnd);
 	putChar('\n');
+
+	installIRQHandler(1, handleKeypress);
 
 	/* Loop forever. */
 	for(;;);

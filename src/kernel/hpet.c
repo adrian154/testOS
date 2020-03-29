@@ -37,12 +37,14 @@ bool initHPET() {
 	/* Read general capabilities. */
 	uint64 generalCapabilities = readRegister64(GENERAL_CAPABILITIES);
 	uint32 capabilitiesLower = generalCapabilities & 0x00000000FFFFFFFF;
-	uint32 period = generalCapabilities & 0xFFFFFFFF00000000;
+	uint32 period = generalCapabilities >> 32;
 
 	unsigned char numTimers = (capabilitiesLower & 0x00001F00) >> 8;
 	bool canDoLegacy = capabilitiesLower & 0x00008000;
 
-	printString("HPET has 0x"); printByte(numTimers); printString(" timers.\n");
+	/* Debug messages */
+	printString("HPET has "); printInt(numTimers); printString(" comparator(s).\n");
+	printString("HPET period is "); printInt(period / 1000000); printString(" nanoseconds.\n");	
 
 	return true;
 
