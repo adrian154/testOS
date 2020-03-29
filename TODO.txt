@@ -9,7 +9,8 @@ TODO:
 
     Medium-
         * Minimal disk driver
-
+        * Kernel event system
+        
     Small-
         * abstract timer (HPET/PIT)
             * features include periodic/one-shot mode, busywait
