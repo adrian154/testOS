@@ -14,6 +14,7 @@
 #include "ps2.h"
 #include "ps2kb.h"
 #include "misc.h"
+#include "paging.h"
 
 void cmain(unsigned int kernelPhysicalStart, unsigned int kernelPhysicalEnd) {     
 

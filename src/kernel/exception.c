@@ -2,6 +2,7 @@
 #include "idt.h"
 #include "gdt.h"
 #include "misc.h"
+#include "exception.h"
 
 /* Exception handlers defined in exception.asm. */
 extern void isr0();
@@ -124,6 +125,16 @@ void faultHandler(struct ExceptionFrame *frame) {
 		printString(exceptionMessages[frame->interruptNumber]);
 		printString(" (error code 0x"); printDword(frame->errorCode); printString(").\n");
 		
+		if(frame->interruptNumber == E_PAGE_FAULT) {
+
+			/* debug: cr2 contains page fault illegal access addr */
+			/* do something else with this eventually */
+			uint32 addr;
+			__asm__ __volatile__("mov %%cr2, %0" : "=r" (addr) :: "eax");
+			printString("extras: address was "); printDword(addr); putChar('\n');
+
+		}
+
 		terminalForeground = WHITE;
 
 		printString("EAX=0x"); printDword(frame->EAX);
