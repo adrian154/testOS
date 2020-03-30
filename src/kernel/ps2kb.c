@@ -81,7 +81,7 @@ uint8 singleScancodePress[170] = {
     0x3B, KEY_J,
     0x42, KEY_K,
     0x4B, KEY_L,
-    0x3C, KEY_SEMICOLON,
+    0x4C, KEY_SEMICOLON,
     0x52, KEY_QUOTE,
     0x5A, KEY_ENTER,
     0x12, KEY_LSHIFT,
