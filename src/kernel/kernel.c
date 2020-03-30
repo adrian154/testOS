@@ -45,11 +45,10 @@ void cmain(unsigned int kernelPhysicalStart, unsigned int kernelPhysicalEnd) {
 	/* Set up IRQs. */
 	installIRQs();
 	printString("installed IRQ handler.\n");
-	
-	/* Enable interrupts. */
+
 	asm("sti");
 
-	/* Dump memory map. */
+	/* Dump memory map for debug purposes. */
 	printString("parsing memory map...\n");
 	
 	/* Read memory map. */

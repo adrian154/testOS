@@ -13,7 +13,7 @@ void initPagingTest() {
         pageDirectory[i] = PDE_NOTPRESENT | PDE_RING0 | PDE_READWRITE;
     }
 
-    /* Set up page table to be identity-mapped */
+    /* Identity page 4M of memory starting from 0 */
     for(int i = 0; i < 1024; i++) {
         testPageTable[i] = (i * 0x1000) | PTE_RING0 | PTE_READWRITE | PTE_PRESENT;
     }
