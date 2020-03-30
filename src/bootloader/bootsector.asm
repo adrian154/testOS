@@ -195,7 +195,7 @@ loaderror db "error loading stage 2.",13,10,0
 ;------------------------------------------------------------------------------;
 ; pad with zeroes. leave space for magic number.
 
-times 510-($-$$) db 0
+TIMES 510-($-$$) db 0
 dw 0xAA55	
 
 

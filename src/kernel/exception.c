@@ -133,6 +133,23 @@ void faultHandler(struct ExceptionFrame *frame) {
 			__asm__ __volatile__("mov %%cr2, %0" : "=r" (addr) :: "eax");
 			printString("extras: address was 0x"); printDword(addr); putChar('\n');
 
+			if(frame->errorCode & 0b100) {
+				printString("user ");
+			} else {
+				printString("kernel ");
+			}
+			printString("process tried to ");
+			if(frame->errorCode & 0b010) {
+				printString("write to ");
+			} else {
+				printString("read from ");
+			}
+			if(frame->errorCode & 1) {
+				printString("a present page\n");
+			} else {
+				printString("a non-present page\n");
+			}
+
 		}
 
 		terminalForeground = WHITE;
