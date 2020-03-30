@@ -5,6 +5,11 @@
 #include "misc.h"
 #include "textmode.h"
 
+/*
+* ISSUES:
+*   - Pause, PrntScrn
+*/
+
 /* Keyboard driver runs on simple finite state machine model */
 
 /* Private defines */
@@ -182,6 +187,14 @@ void handleKeyboardIRQ(struct InterruptFrame *frame) {
         state = STATE_DONE;
 
     } else if(state == STATE_AFTER_E0F0) {
+
+    for(int i = 0; i < 17; i++) {
+            uint8 scKey = e0Press[i * 2];
+            if(scKey == scancode) {
+                keyReleased = e0Press[i * 2 + 1];
+                state = STATE_DONE;
+            }
+        }
 
     }
 
