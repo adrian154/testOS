@@ -12,6 +12,7 @@ nasm -f elf ./kernel/idt.asm -o ../build/idt_asm.o
 nasm -f elf ./kernel/exception.asm -o ../build/exception_asm.o
 nasm -f elf ./kernel/gdt.asm -o ../build/gdt_asm.o
 nasm -f elf ./kernel/irq.asm -o ../build/irq_asm.o
+nasm -f elf ./kernel/paging.asm -o ../build/paging_asm.o
 
 export CFLAGS="-ffreestanding -Wall -Wextra -std=gnu11 -g"
 
@@ -34,7 +35,7 @@ i686-elf-gcc -c ./kernel/ps2kb.c -o ../build/ps2kb.o $CFLAGS
 i686-elf-gcc -c ./kernel/paging.c -o ../build/paging.o $CFLAGS
 
 # Link kernel binary.
-i686-elf-gcc -T ./kernel/linker.ld -o ../build/kernel.bin -ffreestanding -O0 -nostdlib ../build/pmbootloader.o ../build/kernel.o ../build/misc.o ../build/misc_asm.o ../build/textmode.o ../build/idt.o ../build/idt_asm.o ../build/exception.o ../build/exception_asm.o ../build/gdt_asm.o ../build/gdt.o ../build/memorymap.o ../build/irq_asm.o ../build/irq.o ../build/pic.o ../build/acpi.o ../build/hpet.o ../build/serial.o ../build/ps2.o ../build/ps2kb.o ../build/paging.o
+i686-elf-gcc -T ./kernel/linker.ld -o ../build/kernel.bin -ffreestanding -O0 -nostdlib ../build/pmbootloader.o ../build/kernel.o ../build/misc.o ../build/misc_asm.o ../build/textmode.o ../build/idt.o ../build/idt_asm.o ../build/exception.o ../build/exception_asm.o ../build/gdt_asm.o ../build/gdt.o ../build/memorymap.o ../build/irq_asm.o ../build/irq.o ../build/pic.o ../build/acpi.o ../build/hpet.o ../build/serial.o ../build/ps2.o ../build/ps2kb.o ../build/paging.o ../build/paging_asm.o
 
 # Write bootsector, bootloader, and kernel binary
 dd if=../build/bootsector.bin of=../img/disk.img

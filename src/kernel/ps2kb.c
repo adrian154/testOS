@@ -201,7 +201,7 @@ void handleKeyboardIRQ(struct InterruptFrame *frame) {
     keyStates[keyReleased] = false;
     keyStates[keyPressed] = true;
 
-    if(keyReleased != KEY_NONE || keyPressed != KEY_NONE) {
+    if((keyReleased != KEY_NONE || keyPressed != KEY_NONE) && keystrokeHandler != null) {
         struct Keystroke keystroke;
         keystroke.key = (keyReleased != KEY_NONE ? keyReleased : keyPressed);
         keystroke.state = keyReleased != KEY_NONE ? false : true;

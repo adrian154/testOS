@@ -27,4 +27,9 @@
 #define PTE_CACHE_DISABLED  0b00010000
 #define PTE_CACHE           0b00000000
 
+/* From assembly */
+extern void loadPageDirectory(uint32 *pagingDirectory);
+extern void enablePaging();
+extern void initPagingTest();
+
 #endif

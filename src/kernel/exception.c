@@ -131,7 +131,7 @@ void faultHandler(struct ExceptionFrame *frame) {
 			/* do something else with this eventually */
 			uint32 addr;
 			__asm__ __volatile__("mov %%cr2, %0" : "=r" (addr) :: "eax");
-			printString("extras: address was "); printDword(addr); putChar('\n');
+			printString("extras: address was 0x"); printDword(addr); putChar('\n');
 
 		}
 

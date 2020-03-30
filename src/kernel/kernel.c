@@ -112,6 +112,12 @@ void cmain(unsigned int kernelPhysicalStart, unsigned int kernelPhysicalEnd) {
 	printDword(kernelPhysicalEnd);
 	putChar('\n');
 
+	initPagingTest();
+	printString("enabled paging\n");
+
+	uint8 *ptr = (uint8 *)0xDEADBEEF;
+	*ptr = null;
+
 	/* Loop forever. */
 	for(;;);
 
