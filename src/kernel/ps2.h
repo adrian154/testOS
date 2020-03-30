@@ -8,6 +8,8 @@
 #define PS2_COMMAND_REGISTER    0x64
 
 /* PS2 controller commands */
+#define PS2_READ_CONFIG_BYTE    0x20
+#define PS2_WRITE_CONFIG_BYTE   0x60
 #define PS2_DISABLE_PORT1       0xAD
 #define PS2_DISABLE_PORT2       0xA7
 #define PS2_ENABLE_PORT1        0xAE

@@ -125,6 +125,7 @@ void handleKeyboardIRQ(struct InterruptFrame *frame) {
         for(int i = 0; i < 85; i++) {
             uint8 scKey = singleScancodePress[i * 2];
             if(scKey == scancode) {
+                printString("T");
                 keyPressed = singleScancodePress[i * 2 + 1];
             }
         }
@@ -146,21 +147,14 @@ void handleKeyboardIRQ(struct InterruptFrame *frame) {
     }
 
     printString("key pressed: 0x"); printByte(keyPressed);
+    printString(", scancode: 0x"); printByte(scancode);
+    printString("\n");
 
 }
 
 bool initKeyboard() {
 
     state = STATE_DONE;
-
-    /* Set scancode set 2 */
-    ps2_waitWrite();
-    outb(PS2_DATA_PORT, PS2_KB_SET_SCANCODE_SET);
-    ps2_waitAck();
-
-    ps2_waitWrite();
-    outb(PS2_DATA_PORT, PS2_KB_SCANCODE_SET_2);
-    ps2_waitAck();
 
     installIRQHandler(IRQ_PS2_KEYBOARD, handleKeyboardIRQ);
     return true;
