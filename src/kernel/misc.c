@@ -1,3 +1,5 @@
+#include "misc.h"
+
 unsigned int strlen(const char *string) {
 	unsigned int length = 0;
 	
@@ -24,3 +26,13 @@ void outb(unsigned short port, unsigned char data) {
 	__asm__ __volatile__ ("outb %1, %0" : : "dN"(port), "a"(data));
 }
 
+void debugMessage(const char *function, const char *message, uint8 color) {
+
+	uint8 preColor = terminalForeground;
+	terminalForeground = color;
+	printString(function);
+	printString(": ");
+	printString(message);
+	terminalForeground = preColor;
+
+}

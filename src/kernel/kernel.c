@@ -12,6 +12,7 @@
 #include "serial.h"
 #include "ps2.h"
 #include "ps2kb.h"
+#include "misc.h"
 
 void cmain(unsigned int kernelPhysicalStart, unsigned int kernelPhysicalEnd) {     
 
@@ -55,24 +56,20 @@ void cmain(unsigned int kernelPhysicalStart, unsigned int kernelPhysicalEnd) {
 
 	/* Enable keyboard. */
 	if(!initPS2Controller()) {
-		terminalForeground = BRIGHT_RED;
-		printString("fatal: could not enable PS2 controller.\n");
-		terminalForeground = WHITE;
-
-		printString("system halted. manually restart your computer.");
+		ERROR("fatal: couldn't enable PS/2 controller\n");
 		hang();
 	}
-	printString("initialized PS2 controller.\n");
+	printString("initialized PS/2 controller.\n");
+
+	if(!initKeyboard()) {
+		ERROR("fatal: could not initialize PS/2 keyboard\n");
+	}
+	printString("initialized PS/2 keyboard.\n");
 
 	/* Try to locate RSDP. If it cannot be found, print an error. */
 	findRSDP();
 	if(RSDP == 0) {
-		terminalForeground = BRIGHT_RED;
-		printString("fatal: could not find RSDP or RSDP is corrupted.\n");
-		terminalForeground = WHITE;
-	
-		printString("system halted. manually restart your computer.");
-		hang();
+		ERROR("fatal: RSDP was missing or corrupted\n");
 	}
 	
 	/* Print some debug messages. */
@@ -89,23 +86,19 @@ void cmain(unsigned int kernelPhysicalStart, unsigned int kernelPhysicalEnd) {
 	/* Warning, because ACPI 2.0 may cause some weirdness on dodgy machines. */
 	printString("ACPI revision is 0x"); printByte(RSDP->revision);
 	if(RSDP->revision > 0) {
-		terminalForeground = BRIGHT_YELLOW;
-		printString("warning: testOS does not support ACPI 2.0+\n");
-		terminalForeground = WHITE;
+		WARNING("ACPI 2.0 features not supported\n");
 	}
 	putChar('\n');
 	
 	/* Initialize RSDT. */
 	if(!initRSDT()) {
-		terminalForeground = BRIGHT_RED;
-		printString("fatal: could not initialize RSDT or RSDT is corrupted.");
+		ERROR("fatal: RSDT missing or corrupted\n");
 		hang();
 	}
 
 	/* Try to initialize HPET. */
 	if(!initHPET()) {
-		terminalForeground = BRIGHT_RED;
-		printString("fatal: could not initialize HPET");
+		ERROR("fatal: could not initialize HPET\n");
 		hang();
 	}
 	printString("initialized HPET\n");
@@ -116,8 +109,6 @@ void cmain(unsigned int kernelPhysicalStart, unsigned int kernelPhysicalEnd) {
 	printString(" to 0x");
 	printDword(kernelPhysicalEnd);
 	putChar('\n');
-
-	initKeyboard();
 
 	/* Loop forever. */
 	for(;;);

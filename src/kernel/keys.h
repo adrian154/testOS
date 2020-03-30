@@ -204,6 +204,4 @@ enum key {
     KEY_SPACE
 };
 
-extern void initKeyboard();
-
 #endif

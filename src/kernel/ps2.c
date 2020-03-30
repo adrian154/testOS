@@ -11,6 +11,10 @@ void ps2_waitWrite() {
     while(inb(PS2_STATUS_REGISTER) & 0b00000010);
 }
 
+void ps2_waitAck() {
+    while(inb(PS2_DATA_PORT) != 0xFA);
+}
+
 bool initPS2Controller() {
 
     /* Disable all devices. */
@@ -25,9 +29,7 @@ bool initPS2Controller() {
     ps2_waitRead();
     uint8 response = inb(PS2_DATA_PORT); 
     if(response != PS2_SELF_TEST_OK) {
-        terminalForeground = BRIGHT_RED;
-        printString("initPS2Keyboard(): controller self test failed (response was 0x"); printByte(response); printString(")\n");
-        terminalForeground = WHITE;
+        ERROR("PS/2 controller self test failed\n");
         return false;
     }
 

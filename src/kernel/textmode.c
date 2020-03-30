@@ -25,6 +25,10 @@ void clearScreen() {
 			buffer[y * 80 + x] = encodeCharacter(terminalForeground, terminalBackground, ' ');
 		}
 	}
+
+	terminalX = 0;
+	terminalY = 0;
+	moveCursor(1, 1);
 }
 
 /* Move cursor */

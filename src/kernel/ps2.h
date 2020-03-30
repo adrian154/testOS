@@ -44,5 +44,6 @@
 extern bool initPS2Controller();
 extern void ps2_waitWrite();
 extern void ps2_waitRead();
+extern void ps2_waitAck();
 
 #endif 

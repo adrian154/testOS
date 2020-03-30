@@ -1,6 +1,7 @@
 #include "acpi.h"
 #include "textmode.h"
 #include "bool.h"
+#include "misc.h"
 
 bool findRSDP() {
 	
@@ -39,15 +40,14 @@ bool findRSDP() {
 				
 			} else {
 				
-				terminalForeground = BRIGHT_RED;
-				printString("findRSDP(): RSDP checksum does not equal zero, got 0x"); printByte(total); putChar('\n');
+				ERROR("RSDP checksum not zero\n");
 				return false;
 			
 			}
 		}
 	}
 	
-	printString("findRSDP(): did not find RSDP in 0xE0000 through 0xFFFFF\n");
+	ERROR("couldn't find RSDP\n");
 	return false;
 
 }
@@ -73,10 +73,7 @@ bool initRSDT() {
 	
 	if((sum = checksum(&RSDT->header)) != 0) {
 
-		terminalForeground = BRIGHT_RED;
-		printString("initRSDT(): RSDT checksum does not equal zero, got 0x");
-		printByte(sum); putChar('\n');
-		
+		ERROR("RSDT checksum not zero\n");
 		return false;
 
 	}

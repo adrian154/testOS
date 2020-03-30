@@ -27,8 +27,7 @@ bool initHPET() {
 	struct HPETDescriptor *descriptor = (struct HPETDescriptor *)findTable(HPET_SIGNATURE);
 	if(descriptor == null) {
 
-		terminalForeground = BRIGHT_RED;
-		printString("initHpet(): could not find HPET ACPI table, may not be supported.\n");
+		ERROR("couldn't find HPET ACPI table, may be disabled or unsupported.\n");
 		return false;
 	}
 

@@ -116,9 +116,10 @@ void faultHandler(struct ExceptionFrame *frame) {
 	
 	/* If the interrupt is an exception, print an error message, dump registers */
 	if(frame->interruptNumber < 32) {
-		terminalForeground = BRIGHT_RED;
 		
-		putChar('\n');
+		terminalBackground = RED;
+		clearScreen();
+
 		printString("fatal: cpu exception 0x"); printByte(frame->interruptNumber); printString(": ");
 		printString(exceptionMessages[frame->interruptNumber]);
 		printString(" (error code 0x"); printDword(frame->errorCode); printString(").\n");

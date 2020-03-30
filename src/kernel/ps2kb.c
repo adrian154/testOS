@@ -149,16 +149,20 @@ void handleKeyboardIRQ(struct InterruptFrame *frame) {
 
 }
 
-void initKeyboard() {
+bool initKeyboard() {
 
     state = STATE_DONE;
 
     /* Set scancode set 2 */
-    //ps2_waitWrite();
-    outb(PS2_COMMAND_REGISTER, PS2_KB_SET_SCANCODE_SET);
-    //ps2_waitWrite();
-    outb(PS2_COMMAND_REGISTER, PS2_KB_SCANCODE_SET_2);
+    ps2_waitWrite();
+    outb(PS2_DATA_PORT, PS2_KB_SET_SCANCODE_SET);
+    ps2_waitAck();
+
+    ps2_waitWrite();
+    outb(PS2_DATA_PORT, PS2_KB_SCANCODE_SET_2);
+    ps2_waitAck();
 
     installIRQHandler(IRQ_PS2_KEYBOARD, handleKeyboardIRQ);
+    return true;
 
 }
