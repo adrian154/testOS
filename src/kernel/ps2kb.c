@@ -112,6 +112,26 @@ uint8 singleScancodePress[170] = {
     0x71, KEY_KP_PERIOD
 };
 
+uint8 e0Press[34] = {
+    0x1F, KEY_LWIN,
+    0x14, KEY_RCTRL,
+    0x27, KEY_RWIN,
+    0x11, KEY_RALT,
+    0x2F, KEY_MENUS,
+    0x70, KEY_INSERT,
+    0x6C, KEY_SCROLLOCK,
+    0x7D, KEY_PAGEUP,
+    0x71, KEY_DELETE,
+    0x69, KEY_END,
+    0x7A, KEY_PAGEDOWN,
+    0x75, KEY_UP,
+    0x6B, KEY_LEFT,
+    0x72, KEY_DOWN,
+    0x74, KEY_RIGHT,
+    0x4A, KEY_KP_SLASH,
+    0x5a, KEY_KP_ENTER
+};
+
 void handleKeyboardIRQ(struct InterruptFrame *frame) {
 
     uint8 scancode = inb(PS2_DATA_PORT);
@@ -125,7 +145,6 @@ void handleKeyboardIRQ(struct InterruptFrame *frame) {
         for(int i = 0; i < 85; i++) {
             uint8 scKey = singleScancodePress[i * 2];
             if(scKey == scancode) {
-                printString("T");
                 keyPressed = singleScancodePress[i * 2 + 1];
             }
         }
@@ -137,18 +156,41 @@ void handleKeyboardIRQ(struct InterruptFrame *frame) {
 
     } else if(state == STATE_AFTER_E0) {
 
+        for(int i = 0; i < 17; i++) {
+            uint8 scKey = e0Press[i * 2];
+            if(scKey == scancode) {
+                keyPressed = e0Press[i * 2 + 1];
+                state = STATE_DONE;
+            }
+        }
+
         if(scancode == 0xF0)
             state = STATE_AFTER_E0F0;
         
     } else if(state == STATE_AFTER_F0) {
 
+        /* All after-F0 scancodes are single byte releases */
+        /* `scancode` corresponds with single byte press scancode */
+        for(int i = 0; i < 85; i++) {
+            uint8 scKey = singleScancodePress[i * 2];
+            if(scKey == scancode) {
+                keyReleased = singleScancodePress[i * 2 + 1];
+            }
+        }
+
+        /* Reset state, all F0(x) scancodes are 2-byte */
+        state = STATE_DONE;
+
     } else if(state == STATE_AFTER_E0F0) {
 
     }
 
-    printString("key pressed: 0x"); printByte(keyPressed);
-    printString(", scancode: 0x"); printByte(scancode);
-    printString("\n");
+    /* Debug */
+    if(keyPressed != KEY_NONE || keyReleased != KEY_NONE) {
+        printString("key pressed: 0x"); printByte(keyPressed);
+        printString(", key released: 0x"); printByte(keyReleased);
+        printString("\n");
+    }
 
 }
 
