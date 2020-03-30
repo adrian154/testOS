@@ -31,6 +31,8 @@ extern void printByte(uint8 byte);
 extern void printWord(uint16 word);
 extern void printDword(uint32 dword);
 extern void printQword(uint64 qword);
+extern void enableCursor();
+extern void disableCursor();
 extern void moveCursor(unsigned int x, unsigned int y);
 extern void printUint(unsigned int number);
 extern void printInt(int number);

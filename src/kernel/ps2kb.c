@@ -195,7 +195,7 @@ void handleKeyboardIRQ(struct InterruptFrame *frame) {
             }
         }
 
-    }
+    }   
 
     /* Update key state, dispatch key events */
     keyStates[keyReleased] = false;

@@ -40,6 +40,20 @@ void moveCursor(unsigned int x, unsigned int y) {
 	outb(0x3D5, (unsigned char) ((position >> 8) & 0xFF));
 }
 
+/* Toggle cursor */
+void enableCursor() {
+	outb(0x3D4, 0x0A);
+	outb(0x3D5, inb(0x3D5) & 0xC0);
+
+	outb(0x3D4, 0x0B);
+	outb(0x3D5, (inb(0x3D5) & 0xE0) | 15);
+}
+
+void disableCursor() {
+	outb(0x3D4, 0x0A);
+	outb(0x3D5, 0x20);
+}
+
 /* Reset terminal. */
 void resetTerminal() {
 	

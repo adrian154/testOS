@@ -15,41 +15,6 @@
 #include "ps2kb.h"
 #include "misc.h"
 
-const char *alphaLower = "abcdefghijklmnopqrstuvwxyz";
-const char *alphaUpper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-const char *num = "0123456789";
-const char *numShift = ")!@#$%^&*(";
-char textBuf[256];
-int pos;
-
-void testHdlr(struct Keystroke ks) {
-	static bool shiftPressed;
-	static bool capsLocked;
-	bool type = false;
-	char ch;
-
-	printByte(ks.key);
-
-	if(ks.key == KEY_LSHIFT || ks.key == KEY_RSHIFT) {
-		shiftPressed = ks.state;
-	}
-	if(ks.key == KEY_CAPSLOCK) {
-		capsLocked = !capsLocked;
-	}
-	if(ks.key >= KEY_A && ks.key <= KEY_Z && ks.state) {
-		ch = (capsLocked ^ shiftPressed) ? alphaUpper[ks.key - KEY_A] : alphaLower[ks.key - KEY_A];
-		type = true;
-	}
-	if(ks.key >= KEY_0 && ks.key <= KEY_9 && ks.state) {
-		ch = shiftPressed ? numShift[ks.key - KEY_0] : num[ks.key - KEY_0];
-		type = true;
-	}
-	if(type) {
-		putChar(ch);
-	}
-
-}
-
 void cmain(unsigned int kernelPhysicalStart, unsigned int kernelPhysicalEnd) {     
 
 	/* Reset terminal so messages can be printed to screen. */           
@@ -145,11 +110,6 @@ void cmain(unsigned int kernelPhysicalStart, unsigned int kernelPhysicalEnd) {
 	printString(" to 0x");
 	printDword(kernelPhysicalEnd);
 	putChar('\n');
-
-	/* Set up text test */
-	setKeystrokeHandler(testHdlr);
-	memset(textBuf, 0, 256);
-	pos = 0;
 
 	/* Loop forever. */
 	for(;;);
