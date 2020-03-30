@@ -14,6 +14,10 @@
 #include "ps2kb.h"
 #include "misc.h"
 
+void testHdlr(struct Keystroke ks) {
+	printByte(ks.key); printString(ks.state ? " pressed" : " released");
+}
+
 void cmain(unsigned int kernelPhysicalStart, unsigned int kernelPhysicalEnd) {     
 
 	/* Reset terminal so messages can be printed to screen. */           
@@ -109,6 +113,8 @@ void cmain(unsigned int kernelPhysicalStart, unsigned int kernelPhysicalEnd) {
 	printString(" to 0x");
 	printDword(kernelPhysicalEnd);
 	putChar('\n');
+
+	setKeystrokeHandler(testHdlr);
 
 	/* Loop forever. */
 	for(;;);

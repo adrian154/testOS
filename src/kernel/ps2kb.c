@@ -4,10 +4,11 @@
 #include "ps2.h"
 #include "misc.h"
 #include "textmode.h"
+#include "ps2kb.h"
 
 /*
 * ISSUES:
-*   - Pause, PrntScrn
+*   - Pause, PrntScrn not supported
 */
 
 /* Keyboard driver runs on simple finite state machine model */
@@ -18,9 +19,7 @@
 #define STATE_AFTER_F0      2
 #define STATE_AFTER_E0F0    3
 
-#define NONE    0
-#define PRESS   1    
-#define RELEASE 2
+KeystrokeHandler keystrokeHandler;
 
 /* Key states. */
 bool keyStates[256];
@@ -188,7 +187,7 @@ void handleKeyboardIRQ(struct InterruptFrame *frame) {
 
     } else if(state == STATE_AFTER_E0F0) {
 
-    for(int i = 0; i < 17; i++) {
+        for(int i = 0; i < 17; i++) {
             uint8 scKey = e0Press[i * 2];
             if(scKey == scancode) {
                 keyReleased = e0Press[i * 2 + 1];
@@ -198,11 +197,15 @@ void handleKeyboardIRQ(struct InterruptFrame *frame) {
 
     }
 
-    /* Debug */
-    if(keyPressed != KEY_NONE || keyReleased != KEY_NONE) {
-        printString("key pressed: 0x"); printByte(keyPressed);
-        printString(", key released: 0x"); printByte(keyReleased);
-        printString("\n");
+    /* Update key state, dispatch key events */
+    keyStates[keyReleased] = false;
+    keyStates[keyPressed] = true;
+
+    if(keyReleased != KEY_NONE || keyPressed != KEY_NONE) {
+        struct Keystroke keystroke;
+        keystroke.key = (keyReleased != KEY_NONE ? keyReleased : keyPressed);
+        keystroke.state = keyReleased != KEY_NONE ? false : true;
+        keystrokeHandler(keystroke);
     }
 
 }
@@ -210,8 +213,19 @@ void handleKeyboardIRQ(struct InterruptFrame *frame) {
 bool initKeyboard() {
 
     state = STATE_DONE;
+    for(int i = 0; i < 256; i++) {
+        keyStates[i] = 0;
+    }
 
     installIRQHandler(IRQ_PS2_KEYBOARD, handleKeyboardIRQ);
     return true;
 
+}
+
+void setKeystrokeHandler(KeystrokeHandler newHandler) {
+    keystrokeHandler = newHandler;
+}
+
+void clearKeystrokeHandler() {
+    keystrokeHandler = null;
 }
